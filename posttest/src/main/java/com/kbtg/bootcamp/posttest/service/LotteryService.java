@@ -5,14 +5,14 @@ import com.kbtg.bootcamp.posttest.payload.response.*;
 
 public interface LotteryService {
 
-    TicketsResponse findAllTickets();
+    TicketsResponse listAvailableLotteries();
 
-    UserLotteriesResponse findLotteries(int userId);
+    UserLotteriesResponse fetchUserLotteries(int userId);
 
-    TicketResponse createLottery(LotteryRequest lotteryRequest);
+    TicketResponse registerLottery(LotteryRequest lotteryRequest);
 
-    UserTicketIdResponse createUserTicket(int userId, String tickerId);
+    UserTicketIdResponse buyLotteryTicket(int userId, String tickerId);
 
-    TicketResponse deleteUserTicket(int userId, String tickerId);
+    TicketResponse sellLotteryTicket(int userId, String tickerId);
 
 }

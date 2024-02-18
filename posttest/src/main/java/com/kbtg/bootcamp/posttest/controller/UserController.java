@@ -36,7 +36,7 @@ public class UserController {
             String ticketId
     ) {
 
-        UserTicketIdResponse response = lotteryService.createUserTicket(userId, ticketId);
+        UserTicketIdResponse response = lotteryService.buyLotteryTicket(userId, ticketId);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -48,7 +48,7 @@ public class UserController {
             @Min(1)
             @Digits(integer = Integer.MAX_VALUE, fraction = 0, message = "userId must be an integer")
             int userId){
-        return lotteryService.findLotteries(userId);
+        return lotteryService.fetchUserLotteries(userId);
     }
 
 
@@ -66,7 +66,7 @@ public class UserController {
             String ticketId
     ){
 
-        return lotteryService.deleteUserTicket(userId, ticketId);
+        return lotteryService.sellLotteryTicket(userId, ticketId);
 
     }
 

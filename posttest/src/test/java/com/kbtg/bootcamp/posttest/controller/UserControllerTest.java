@@ -2,7 +2,6 @@ package com.kbtg.bootcamp.posttest.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.kbtg.bootcamp.posttest.exception.StatusInternalServerErrorException;
 import com.kbtg.bootcamp.posttest.payload.response.TicketResponse;
 import com.kbtg.bootcamp.posttest.payload.response.UserLotteriesResponse;
 import com.kbtg.bootcamp.posttest.payload.response.UserTicketIdResponse;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -55,7 +53,7 @@ class UserControllerTest {
         UserTicketIdResponse response = new UserTicketIdResponse(1);
 
         // Mock the behavior of the lotteryService.createUserTicket method
-        when(lotteryService.createUserTicket(userId, ticketId))
+        when(lotteryService.buyLotteryTicket(userId, ticketId))
                 .thenReturn(response);
 
         mockMvc.perform(post("/users/" + userId + "/lotteries/" + ticketId)
@@ -174,7 +172,7 @@ class UserControllerTest {
         UserLotteriesResponse response = new UserLotteriesResponse(tickets, count, cost);
 
         // Mock the behavior of the lotteryService.findLotteries method
-        when(lotteryService.findLotteries(userId))
+        when(lotteryService.fetchUserLotteries(userId))
                 .thenReturn(response);
 
         mockMvc.perform(get("/users/" + userId + "/lotteries/"))
@@ -218,7 +216,7 @@ class UserControllerTest {
         TicketResponse response = new TicketResponse(ticket);
 
         // Mock the behavior of the lotteryService.findLotteries method
-        when(lotteryService.deleteUserTicket(userId, ticket))
+        when(lotteryService.sellLotteryTicket(userId, ticket))
                 .thenReturn(response);
 
         mockMvc.perform(delete("/users/" + userId + "/lotteries/" + ticket))

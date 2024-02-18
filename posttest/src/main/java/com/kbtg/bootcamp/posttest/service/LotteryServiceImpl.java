@@ -27,11 +27,11 @@ public class LotteryServiceImpl implements LotteryService {
 
     @Override
     @Transactional
-    public TicketResponse createLottery(LotteryRequest request) {
+    public TicketResponse registerLottery(LotteryRequest request) {
 
         // check the existing Lottery
         String ticket = request.ticket();
-        Optional<Lottery> tempLottery = Optional.ofNullable(lotteryRepository.findByticket(ticket));
+        Optional<Lottery> tempLottery = Optional.ofNullable(lotteryRepository.findByTicket(ticket));
 
         // found the existing Lottery throw the exception status 400 Bad Request
         if (tempLottery.isPresent()) {
@@ -49,7 +49,7 @@ public class LotteryServiceImpl implements LotteryService {
     }
 
     @Override
-    public TicketsResponse findAllTickets() {
+    public TicketsResponse listAvailableLotteries() {
 
         // retrieve available lotteries in stock.
         List<Lottery> lotteries = lotteryRepository.findByAmountGreaterThanEqual(1);
@@ -76,26 +76,35 @@ public class LotteryServiceImpl implements LotteryService {
 
     @Transactional
     @Override
-    public UserTicketIdResponse createUserTicket(int userId, String tickerId) {
+    public UserTicketIdResponse buyLotteryTicket(int userId, String tickerId) {
 
-        // Find the existing lottery in the database by ticket ID.
-        Optional<Lottery> lottery = Optional.ofNullable(lotteryRepository.findByticket(tickerId));
-        if (lottery.isEmpty()) {
-            throw new StatusInternalServerErrorException("Not found ticket id: " + tickerId);
+        // Find the existing optionLottery in the database by ticket ID.
+        Optional<Lottery> optionLottery = Optional.ofNullable(
+                lotteryRepository.findByTicketAndAmountGreaterThanEqual(tickerId, 1));
+        if (optionLottery.isEmpty()) {
+            throw new StatusInternalServerErrorException("Lottery ticket number " + tickerId + " is not available");
         }
 
+        // get lottery object
+        Lottery selectedLottery = optionLottery.get();
+
         // create UserTicket
-        UserTicket userTicket = new UserTicket(userId, lottery.get());
+        UserTicket userTicket = new UserTicket(userId, selectedLottery);
 
         // save UserTicket to database and receive id of user_ticket
-        UserTicketIdResponse userTicketIdResponse = new UserTicketIdResponse();
-        userTicketIdResponse.setId(userTicketRepository.save(userTicket).getId());
+        UserTicketIdResponse response = new UserTicketIdResponse();
+        response.setId(userTicketRepository.save(userTicket).getId());
 
-        return userTicketIdResponse;
+        // update amount to database
+        int updateAmount = selectedLottery.getAmount() - 1;
+        selectedLottery.setAmount(updateAmount);
+        lotteryRepository.save(selectedLottery);
+
+        return response;
     }
 
     @Override
-    public UserLotteriesResponse findLotteries(int userId) {
+    public UserLotteriesResponse fetchUserLotteries(int userId) {
 
         // find lottery by user id
         List<UserTicket> userTickets = userTicketRepository.findByUserId(userId);
@@ -127,10 +136,10 @@ public class LotteryServiceImpl implements LotteryService {
 
     @Override
     @Transactional
-    public TicketResponse deleteUserTicket(int userId, String tickerId) {
+    public TicketResponse sellLotteryTicket(int userId, String tickerId) {
 
         // find lottery by user id
-        Optional<Lottery> tempLottery = Optional.ofNullable(lotteryRepository.findByticket(tickerId));
+        Optional<Lottery> tempLottery = Optional.ofNullable(lotteryRepository.findByTicket(tickerId));
 
         if (tempLottery.isEmpty()) {
             throw new StatusInternalServerErrorException("Lottery is not found with Ticket ID: " + tickerId);

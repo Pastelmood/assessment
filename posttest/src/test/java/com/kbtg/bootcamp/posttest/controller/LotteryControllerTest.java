@@ -2,8 +2,6 @@ package com.kbtg.bootcamp.posttest.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.kbtg.bootcamp.posttest.payload.request.LotteryRequest;
-import com.kbtg.bootcamp.posttest.payload.response.TicketResponse;
 import com.kbtg.bootcamp.posttest.payload.response.TicketsResponse;
 import com.kbtg.bootcamp.posttest.service.LotteryService;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -20,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -57,7 +53,7 @@ class LotteryControllerTest {
         String response = objectWriter.writeValueAsString(ticketsResponse);
 
         // Mock the behavior of the lotteryService.findAllTickets method
-        when(lotteryService.findAllTickets())
+        when(lotteryService.listAvailableLotteries())
                 .thenReturn(ticketsResponse);
 
         mockMvc.perform(get("/lotteries"))

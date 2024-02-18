@@ -12,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -52,7 +51,7 @@ class AdminControllerTest {
 
         // Mock the behavior of the lotteryService.createLottery method
         TicketResponse response = new TicketResponse("000000");
-        when(lotteryService.createLottery(any()))
+        when(lotteryService.registerLottery(any()))
                 .thenReturn(response);
 
         // Perform the POST request
