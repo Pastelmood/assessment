@@ -43,7 +43,7 @@ class AdminControllerTest {
     }
 
     @Test
-    @DisplayName("When create lottery should be return status 201 created and ticket value is 000000")
+    @DisplayName("Create lottery should be return status 201 created and ticket value is 000000")
     void createLotteryShouldBeReturnStatusCreated() throws Exception {
 
         LotteryRequest lotteryRequest = new LotteryRequest("000000", 80, 1);

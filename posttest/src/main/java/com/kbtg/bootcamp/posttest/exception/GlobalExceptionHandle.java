@@ -6,6 +6,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,7 +17,8 @@ import java.util.List;
 public class GlobalExceptionHandle {
 
     @ExceptionHandler
-    public ResponseEntity<GlobalExceptionResponse> handleException (StatusInternalServerErrorException exception) {
+    public ResponseEntity<GlobalExceptionResponse> handleException (
+            StatusInternalServerErrorException exception) {
 
         // create a GlobalExceptionResponse
         GlobalExceptionResponse errorResponse = new GlobalExceptionResponse();
@@ -29,7 +32,8 @@ public class GlobalExceptionHandle {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ValidationExceptionResponse> handleValidateException(MethodArgumentNotValidException exception) {
+    public ResponseEntity<BadRequestExceptionResponse> handleValidateException(
+            MethodArgumentNotValidException exception) {
 
         // get the default errors
         List<String> messages = new ArrayList<>();
@@ -42,7 +46,7 @@ public class GlobalExceptionHandle {
         }
 
         // create exception response
-        ValidationExceptionResponse errorResponse = new ValidationExceptionResponse();
+        BadRequestExceptionResponse errorResponse = new BadRequestExceptionResponse();
         errorResponse.setTimestamp(LocalDateTime.now());
         errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
         errorResponse.setError(HttpStatus.BAD_REQUEST.name());
@@ -52,18 +56,29 @@ public class GlobalExceptionHandle {
 
     }
 
-
     @ExceptionHandler
-    public ResponseEntity<GlobalExceptionResponse> handleBadRequestException (BadRequestException exception) {
+    public ResponseEntity<GlobalExceptionResponse> handleMethodValidationException(
+            HandlerMethodValidationException exception) {
 
-        // create a GlobalExceptionResponse
         GlobalExceptionResponse errorResponse = new GlobalExceptionResponse();
         errorResponse.setTimestamp(LocalDateTime.now());
         errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
         errorResponse.setError(HttpStatus.BAD_REQUEST.name());
-        errorResponse.setMessage(exception.getMessage());
+        errorResponse.setMessage("Validation failed");
 
-        // return ResponseEntity
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<GlobalExceptionResponse> handleMethodArgumentTypeMismatchException(
+            MethodArgumentTypeMismatchException exception) {
+
+        GlobalExceptionResponse errorResponse = new GlobalExceptionResponse();
+        errorResponse.setTimestamp(LocalDateTime.now());
+        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        errorResponse.setError(HttpStatus.BAD_REQUEST.name());
+        errorResponse.setMessage("Validation failed");
+
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 

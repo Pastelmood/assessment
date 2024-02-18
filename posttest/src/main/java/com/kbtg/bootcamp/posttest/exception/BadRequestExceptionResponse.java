@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class ValidationExceptionResponse {
+public class BadRequestExceptionResponse {
 
     private LocalDateTime timestamp;
 

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -45,11 +46,11 @@ public class LotteryServiceImpl implements LotteryService {
         List<Lottery> lotteries = lotteryRepository.findByAmountGreaterThanEqual(1);
 
         List<String> availableLotteries = new ArrayList<>();
-        TicketsResponse ticketsResponse = new TicketsResponse();
+        TicketsResponse response = new TicketsResponse();
 
         // response empty list
         if (lotteries.isEmpty()) {
-            return ticketsResponse;
+            return response;
         }
 
         // create availableLotteries
@@ -58,10 +59,9 @@ public class LotteryServiceImpl implements LotteryService {
         }
 
         // add ticket to response object
-        ticketsResponse.setTickets(availableLotteries);
+        response.setTickets(availableLotteries);
 
-        // response ticket response
-        return ticketsResponse;
+        return response;
     }
 
     @Transactional
@@ -70,8 +70,10 @@ public class LotteryServiceImpl implements LotteryService {
 
         // Find the existing availableLotteries in the database by ticket ID.
         List<Lottery> availableLotteries = lotteryRepository.findByTicketAndAmountGreaterThanEqual(tickerId, 1);
+
         if (availableLotteries.isEmpty()) {
-            throw new StatusInternalServerErrorException("Lottery ticket number " + tickerId + " is not available");
+            throw new StatusInternalServerErrorException(
+                    "Lottery ticket number " + tickerId + " is not available or sold out already");
         }
 
         // get a lottery object
@@ -98,8 +100,9 @@ public class LotteryServiceImpl implements LotteryService {
         // find lottery by user id
         List<UserTicket> userTickets = userTicketRepository.findByUserId(userId);
 
+        // return empty information
         if (userTickets.isEmpty()) {
-            throw new StatusInternalServerErrorException("Not found user id: " + userId);
+            return new UserLotteriesResponse();
         }
 
         // for collect tickets and calculate price and amount
@@ -114,12 +117,12 @@ public class LotteryServiceImpl implements LotteryService {
         }
 
         // create UserLotteriesResponse
-        UserLotteriesResponse userLotteriesResponse = new UserLotteriesResponse();
-        userLotteriesResponse.setTickets(tickets);
-        userLotteriesResponse.setCount(count);
-        userLotteriesResponse.setCost(price);
+        UserLotteriesResponse response = new UserLotteriesResponse();
+        response.setTickets(tickets);
+        response.setCount(count);
+        response.setCost(price);
 
-        return userLotteriesResponse;
+        return response;
 
     }
 
@@ -127,28 +130,40 @@ public class LotteryServiceImpl implements LotteryService {
     @Transactional
     public TicketResponse sellLotteryTicket(int userId, String tickerId) {
 
-        // find lottery by user id
-        Optional<Lottery> tempLottery = Optional.ofNullable(lotteryRepository.findByTicket(tickerId));
+        // find lotteries from userId
+        List<UserTicket> userTickets = userTicketRepository.findByUserId(userId);
 
-        if (tempLottery.isEmpty()) {
-            throw new StatusInternalServerErrorException("Lottery is not found with Ticket ID: " + tickerId);
+        if (userTickets.isEmpty()) {
+            throw new StatusInternalServerErrorException("User not found.");
         }
 
-        // find lottery owner from userId
-        Lottery lottery = tempLottery.get();
-        Optional<UserTicket> userTicket = lottery.getUserTickets()
-                .stream()
-                .filter(user -> user.getUserId() == userId)
+        // find A lottery that of input user.
+        Optional<UserTicket> optionalUserTicket = userTickets.stream()
+                .filter(tempLottery -> Objects.equals(tempLottery.getLottery().getTicket(), tickerId))
                 .findFirst();
 
-        if (userTicket.isEmpty()) {
-            throw new StatusInternalServerErrorException("Lottery is not found with Ticket ID: " + tickerId);
+        if (optionalUserTicket.isEmpty()) {
+            throw new StatusInternalServerErrorException("Ticket not found.");
         }
 
-        // if it has lottery
-        UserTicket soldUserTicket = userTicket.get();
-        userTicketRepository.delete(soldUserTicket);
+        // get A UserTicket
+        UserTicket userTicket = optionalUserTicket.get();
 
-        return new TicketResponse(soldUserTicket.getLottery().getTicket());
+        // get A Lottery from this Ticket
+        Lottery lottery = userTicket.getLottery();
+
+        // create the response
+        TicketResponse response = new TicketResponse(lottery.getTicket());
+
+        // remove UserTicket
+        userTicketRepository.delete(userTicket);
+
+        // update Amount to Lottery
+        int newAmount = lottery.getAmount() + 1;
+        lottery.setAmount(newAmount);
+        lotteryRepository.save(lottery);
+
+        return response;
+
     }
 }
