@@ -1,9 +1,12 @@
 # State-1 Build artifact
-FROM amazoncorretto:17-alpine3.19 as builder
+# FROM amazoncorretto:17-alpine3.19 as builder
+FROM amazoncorretto:17.0.10-al2023 AS builder
+
 WORKDIR /app
 ADD . .
-ENTRYPOINT ["gradle"]
-CMD ["build", "--stacktrace"]
+RUN ["ls"]
+RUN ["chmod","+x","gradlew"]
+RUN ["./gradlew","bootJar"]
 
 # State-2 Running image
 FROM gcr.io/distroless/java17-debian12:latest

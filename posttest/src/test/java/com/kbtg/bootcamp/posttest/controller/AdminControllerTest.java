@@ -34,8 +34,6 @@ class AdminControllerTest {
     @Mock
     LotteryService lotteryService;
 
-
-
     @BeforeEach
     void setUp() {
         AdminController adminController = new AdminController(lotteryService);
@@ -139,7 +137,5 @@ class AdminControllerTest {
                         .content("{\"ticket\": \"000000\", \"price\": 80, \"amount\": \"45ea\"}"))
                 .andExpect(status().isBadRequest());
     }
-
-
 
 }

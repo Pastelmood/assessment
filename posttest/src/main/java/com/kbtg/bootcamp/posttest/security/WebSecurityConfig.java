@@ -37,7 +37,6 @@ public class WebSecurityConfig {
         httpSecurity.httpBasic(Customizer.withDefaults());
 
         // disable Cross Site Request Forgery (CSRF)
-        // in general. not required for stateless REST APIs that use POST, PUT, DELETE and/or PATCH
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
         return httpSecurity.build();

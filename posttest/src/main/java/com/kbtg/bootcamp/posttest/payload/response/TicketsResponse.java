@@ -14,4 +14,5 @@ public class TicketsResponse {
     public TicketsResponse(List<String> tickets) {
         this.tickets = tickets;
     }
+
 }

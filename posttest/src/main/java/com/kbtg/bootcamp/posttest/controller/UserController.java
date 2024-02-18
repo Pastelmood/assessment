@@ -47,10 +47,10 @@ public class UserController {
             @NotNull(message = "userId value must not be null")
             @Min(1)
             @Digits(integer = Integer.MAX_VALUE, fraction = 0, message = "userId must be an integer")
-            int userId){
+            int userId
+    ) {
         return lotteryService.fetchUserLotteries(userId);
     }
-
 
     @DeleteMapping("/{userId}/lotteries/{ticketId}")
     public TicketResponse deleteUserTicket(
@@ -64,7 +64,7 @@ public class UserController {
             @NotNull
             @Pattern(regexp = "\\d{6}", message = "Value must be a 6-digit number")
             String ticketId
-    ){
+    ) {
 
         return lotteryService.sellLotteryTicket(userId, ticketId);
 
