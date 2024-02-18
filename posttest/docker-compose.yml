@@ -17,7 +17,7 @@ services:
         container_name: posttest-spring-boot-lottery-shop
         build:
             context: .
-            dockerfile: Dockerfile.multi
+            dockerfile: Dockerfile
         ports:
             - "8888:8888"
         depends_on:
