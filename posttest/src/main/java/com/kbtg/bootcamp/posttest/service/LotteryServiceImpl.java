@@ -29,23 +29,13 @@ public class LotteryServiceImpl implements LotteryService {
     @Transactional
     public TicketResponse registerLottery(LotteryRequest request) {
 
-        // check the existing Lottery
-        String ticket = request.ticket();
-        Optional<Lottery> tempLottery = Optional.ofNullable(lotteryRepository.findByTicket(ticket));
-
-        // found the existing Lottery throw the exception status 400 Bad Request
-        if (tempLottery.isPresent()) {
-            throw new StatusInternalServerErrorException(
-                    "This ticket already in the database. Ticket: " + ticket);
-        }
-
         // create new Lottery
-        Lottery lottery = new Lottery(request.ticket(), request.price(), request.amount());
+        Lottery newLottery = new Lottery(request.ticket(), request.price(), request.amount());
 
         // save Lottery to database
-        lotteryRepository.save(lottery);
+        lotteryRepository.save(newLottery);
 
-        return new TicketResponse(lottery.getTicket());
+        return new TicketResponse(newLottery.getTicket());
     }
 
     @Override
@@ -78,15 +68,14 @@ public class LotteryServiceImpl implements LotteryService {
     @Override
     public UserTicketIdResponse buyLotteryTicket(int userId, String tickerId) {
 
-        // Find the existing optionLottery in the database by ticket ID.
-        Optional<Lottery> optionLottery = Optional.ofNullable(
-                lotteryRepository.findByTicketAndAmountGreaterThanEqual(tickerId, 1));
-        if (optionLottery.isEmpty()) {
+        // Find the existing availableLotteries in the database by ticket ID.
+        List<Lottery> availableLotteries = lotteryRepository.findByTicketAndAmountGreaterThanEqual(tickerId, 1);
+        if (availableLotteries.isEmpty()) {
             throw new StatusInternalServerErrorException("Lottery ticket number " + tickerId + " is not available");
         }
 
-        // get lottery object
-        Lottery selectedLottery = optionLottery.get();
+        // get a lottery object
+        Lottery selectedLottery = availableLotteries.get(0);
 
         // create UserTicket
         UserTicket userTicket = new UserTicket(userId, selectedLottery);
