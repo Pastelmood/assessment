@@ -23,6 +23,6 @@ services:
         depends_on:
             - postgres
         environment:
-            SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/lottery888
+            SPRING_DATASOURCE_URL: ${DATABASE_URL}
             SPRING_DATASOURCE_USERNAME: posttest
             SPRING_DATASOURCE_PASSWORD: p@ssword888
