@@ -42,12 +42,12 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("buyLottery with normal payload should be return 201 and has json path ... id")
-    void buyLottery() throws Exception {
+    @DisplayName("[buyLottery] Should be brought lottery (201)")
+    void shouldBeBoughtLottery() throws Exception {
 
         // payload
-        int userId = 1;
-        String ticketId = "000000";
+        String userId = "1234567890";
+        String ticketId = "123456";
 
         // response
         UserTicketIdResponse response = new UserTicketIdResponse(1);
@@ -65,12 +65,12 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("buyLottery with userId less than 1 should be return 400")
-    void buyLotteryWithUserIdLessThanOneShouldBeReturnStatus400() throws Exception {
+    @DisplayName("[buyLottery] Should be Bad request (400) with userId is less then 10 digits")
+    void shouldBeBadRequestWithUserIdIsLessThanTenDigits() throws Exception {
 
         // payload
-        int userId = 0;
-        String ticketId = "000000";
+        String userId = "123456789";
+        String ticketId = "123456";
 
 
         mockMvc.perform(post("/users/" + userId + "/lotteries/" + ticketId)
@@ -81,8 +81,24 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("buyLottery with userId is Ten should be return 400")
-    void buyLotteryWithUserIdIsTenShouldBeReturnStatus400() throws Exception {
+    @DisplayName("[buyLottery] Should be Bad request (400) with userId is more then 10 digits")
+    void shouldBeBadRequestWithUserIdIsMoreThanTenDigits() throws Exception {
+
+        // payload
+        String userId = "12345678901";
+        String ticketId = "123456";
+
+
+        mockMvc.perform(post("/users/" + userId + "/lotteries/" + ticketId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    @DisplayName("[buyLottery] Should be Bad request (400) with userId is not number")
+    void shouldBeBadRequestWithUserIdIsNotNumber() throws Exception {
 
         // payload
         String userId = "ten";
@@ -96,11 +112,11 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("buyLottery with ticketId 5 digits should be return 400")
-    void buyLotteryWithTicketIdFiveDigitsShouldBeReturnStatus400() throws Exception {
+    @DisplayName("[buyLottery] Should be Bad request (400) with ticketId is less then 6 digits")
+    void shouldBeBadRequestWithTicketIdIsLessThanSixDigits() throws Exception {
 
         // payload
-        int userId = 1;
+        String userId = "1234567890";
         String ticketId = "12345";
 
         mockMvc.perform(post("/users/" + userId + "/lotteries/" + ticketId)
@@ -111,11 +127,11 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("buyLottery with ticketId 7 digits should be return 400")
-    void buyLotteryWithTicketIdSevenDigitsShouldBeReturnStatus400() throws Exception {
+    @DisplayName("[buyLottery] Should be Bad request (400) with ticketId is more then 6 digits")
+    void shouldBeBadRequestWithTicketIdIsMoreThanSixDigits() throws Exception {
 
         // payload
-        int userId = 1;
+        String userId = "1234567890";
         String ticketId = "1234567";
 
         mockMvc.perform(post("/users/" + userId + "/lotteries/" + ticketId)
@@ -126,12 +142,12 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("buyLottery with ticketId is Character combine with number should be return 400")
-    void buyLotteryWithTicketIdIsCharAndNumberShouldBeReturnStatus400() throws Exception {
+    @DisplayName("[buyLottery] Should be Bad request (400) with ticketId is not number")
+    void shouldBeBadRequestWithTicketIdIsNotNumber() throws Exception {
 
         // payload
-        int userId = 1;
-        String ticketId = "123ABC";
+        String userId = "1234567890";
+        String ticketId = "OneTwoThreeFourFive";
 
         mockMvc.perform(post("/users/" + userId + "/lotteries/" + ticketId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -141,25 +157,10 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("buyLottery with ticketId is none should be return 405")
-    void buyLotteryWithTicketIdIsMissingShouldBeReturnStatus405() throws Exception {
-
+    @DisplayName("[getUserLottery] Should be retrieve user's tickets, count and cost (200)")
+    void shouldBeRetrieveUserTicketsCountAndCost() throws Exception {
         // payload
-        int userId = 1;
-        String ticketId = "";
-
-        mockMvc.perform(post("/users/" + userId + "/lotteries/" + ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isMethodNotAllowed())
-                .andReturn();
-    }
-
-    @Test
-    @DisplayName("getUserLottery with normal payload should be return status 200 and jason path are correct")
-    void getUserLotteryWithUserIdNormalShouldBeReturnStatus200() throws Exception {
-        // payload
-        int userId = 1;
+        String userId = "1234567890";
         List<String> tickets = new ArrayList<>();
         tickets.add("123456");
         tickets.add("222222");
@@ -184,10 +185,10 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("getUserLottery with userId less than 1 should be return status 400")
-    void getUserLotteryWithUserIdLessThanOneShouldBeReturnStatus400() throws Exception {
+    @DisplayName("[getUserLottery] Should be Bad Request (400) with userId is less than 10 digits")
+    void shouldBeBadRequestWithUserIdIsLessThanTenDigitsAtGetUserLottery() throws Exception {
         // payload
-        int userId = 0;
+        String userId = "123456789";
 
         mockMvc.perform(get("/users/" + userId + "/lotteries/"))
                 .andExpect(status().isBadRequest())
@@ -195,10 +196,10 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("getUserLottery with userId is string (One) should be return status 400")
-    void getUserLotteryWithUserIdIsStringShouldBeReturnStatus400() throws Exception {
+    @DisplayName("[getUserLottery] Should be Bad Request (400) with userId is more than 10 digits")
+    void shouldBeBadRequestWithUserIdIsMoreThanTenDigitsAtGetUserLottery() throws Exception {
         // payload
-        String userId = "One";
+        String userId = "12345678901";
 
         mockMvc.perform(get("/users/" + userId + "/lotteries/"))
                 .andExpect(status().isBadRequest())
@@ -206,11 +207,22 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("deleteUserTicket should be return status 200 and jsonPath ... ticket")
-    void deleteUserTicketShouldBeReturnStatus200() throws Exception {
+    @DisplayName("[getUserLottery] Should be Bad Request (400) with userId is not number")
+    void shouldBeBadRequestWithUserIdIsNotNumberAtGetUserLottery() throws Exception {
         // payload
-        int userId = 1;
-        String ticket = "000000";
+        String userId = "OneTwoThreeFourFive";
+
+        mockMvc.perform(get("/users/" + userId + "/lotteries/"))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    @DisplayName("[deleteUserTicket] Should be delete user ticket (200)")
+    void shouldBeDeleteUserTicket() throws Exception {
+        // payload
+        String userId = "1234567890";
+        String ticket = "123456";
 
         // response
         TicketResponse response = new TicketResponse(ticket);
@@ -226,11 +238,11 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("deleteUserTicket with userId is less then 1 should be return status 400")
-    void deleteUserTicketWithUserIdLessThanOneShouldBeReturnStatus400() throws Exception {
+    @DisplayName("[deleteUserTicket] Should be Bad Request (400) with userId is less than 10 digits")
+    void shouldBeBadRequestWithUserIdIsLessThanTenDigitsAtDeleteUserTicket() throws Exception {
         // payload
-        int userId = 0;
-        String ticket = "000000";
+        String userId = "123456789";
+        String ticket = "123456";
 
         mockMvc.perform(delete("/users/" + userId + "/lotteries/" + ticket))
                 .andExpect(status().isBadRequest())
@@ -238,11 +250,59 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("deleteUserTicket with userId is String (Two) should be return status 400")
-    void deleteUserTicketWithUserIdIsStringShouldBeReturnStatus400() throws Exception {
+    @DisplayName("[deleteUserTicket] Should be Bad Request (400) with userId is More than 10 digits")
+    void shouldBeBadRequestWithUserIdIsMoreThanTenDigitsAtDeleteUserTicket() throws Exception {
         // payload
-        String userId = "Two";
-        String ticket = "000000";
+        String userId = "12345678901";
+        String ticket = "123456";
+
+        mockMvc.perform(delete("/users/" + userId + "/lotteries/" + ticket))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    @DisplayName("[deleteUserTicket] Should be Bad Request (400) with userId is not number")
+    void shouldBeBadRequestWithUserIdIsNotNumberAtDeleteUserTicket() throws Exception {
+        // payload
+        String userId = "OneTwoThreeFourFive";
+        String ticket = "123456";
+
+        mockMvc.perform(delete("/users/" + userId + "/lotteries/" + ticket))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    @DisplayName("[deleteUserTicket] Should be Bad Request (400) with ticketId is less than 6 digits")
+    void shouldBeBadRequestWithTicketIdIsLessThanSixDigitsAtDeleteUserTicket() throws Exception {
+        // payload
+        String userId = "1234567890";
+        String ticket = "12345";
+
+        mockMvc.perform(delete("/users/" + userId + "/lotteries/" + ticket))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    @DisplayName("[deleteUserTicket] Should be Bad Request (400) with ticketId is more than 6 digits")
+    void shouldBeBadRequestWithTicketIdIsMoreThanSixDigitsAtDeleteUserTicket() throws Exception {
+        // payload
+        String userId = "1234567890";
+        String ticket = "1234567";
+
+        mockMvc.perform(delete("/users/" + userId + "/lotteries/" + ticket))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    @DisplayName("[deleteUserTicket] Should be Bad Request (400) with ticketId is not number")
+    void shouldBeBadRequestWithTicketIdIsNotNumberAtDeleteUserTicket() throws Exception {
+        // payload
+        String userId = "1234567890";
+        String ticket = "OneTwoThree";
 
         mockMvc.perform(delete("/users/" + userId + "/lotteries/" + ticket))
                 .andExpect(status().isBadRequest())

@@ -66,7 +66,7 @@ public class LotteryServiceImpl implements LotteryService {
 
     @Transactional
     @Override
-    public UserTicketIdResponse buyLotteryTicket(int userId, String tickerId) {
+    public UserTicketIdResponse buyLotteryTicket(String userId, String tickerId) {
 
         // Find the existing availableLotteries in the database by ticket ID.
         List<Lottery> availableLotteries = lotteryRepository.findByTicketAndAmountGreaterThanEqual(tickerId, 1);
@@ -95,7 +95,7 @@ public class LotteryServiceImpl implements LotteryService {
     }
 
     @Override
-    public UserLotteriesResponse fetchUserLotteries(int userId) {
+    public UserLotteriesResponse fetchUserLotteries(String userId) {
 
         // find lottery by user id
         List<UserTicket> userTickets = userTicketRepository.findByUserId(userId);
@@ -128,7 +128,7 @@ public class LotteryServiceImpl implements LotteryService {
 
     @Override
     @Transactional
-    public TicketResponse sellLotteryTicket(int userId, String tickerId) {
+    public TicketResponse sellLotteryTicket(String userId, String tickerId) {
 
         // find lotteries from userId
         List<UserTicket> userTickets = userTicketRepository.findByUserId(userId);

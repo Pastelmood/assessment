@@ -26,9 +26,8 @@ public class UserController {
     public ResponseEntity<UserTicketIdResponse> buyLottery(
             @PathVariable(name = "userId")
             @NotNull(message = "userId value must not be null")
-            @Min(1)
-            @Digits(integer = Integer.MAX_VALUE, fraction = 0, message = "userId must be an integer")
-            int userId,
+            @Pattern(regexp = "\\d{10}", message = "Value must be a 10-digit number")
+            String userId,
 
             @PathVariable(name = "ticketId")
             @NotNull
@@ -45,9 +44,8 @@ public class UserController {
     public UserLotteriesResponse getUserLottery(
             @PathVariable("userId")
             @NotNull(message = "userId value must not be null")
-            @Min(1)
-            @Digits(integer = Integer.MAX_VALUE, fraction = 0, message = "userId must be an integer")
-            int userId
+            @Pattern(regexp = "\\d{10}", message = "Value must be a 10-digit number")
+            String userId
     ) {
         return lotteryService.fetchUserLotteries(userId);
     }
@@ -56,9 +54,8 @@ public class UserController {
     public TicketResponse deleteUserTicket(
             @PathVariable(name = "userId")
             @NotNull(message = "userId value must not be null")
-            @Min(1)
-            @Digits(integer = Integer.MAX_VALUE, fraction = 0, message = "userId must be an integer")
-            int userId,
+            @Pattern(regexp = "\\d{10}", message = "Value must be a 10-digit number")
+            String userId,
 
             @PathVariable(name = "ticketId")
             @NotNull

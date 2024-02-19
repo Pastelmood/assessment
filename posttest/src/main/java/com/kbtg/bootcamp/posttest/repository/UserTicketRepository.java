@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface UserTicketRepository extends JpaRepository<UserTicket, Integer> {
 
-    List<UserTicket> findByUserId(int userId);
+    List<UserTicket> findByUserId(String userId);
 
 }
