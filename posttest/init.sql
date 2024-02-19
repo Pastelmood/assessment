@@ -4,8 +4,7 @@ DROP TABLE IF EXISTS lottery CASCADE;
 
 -- Create lottery table
 CREATE TABLE lottery (
-    id SERIAL PRIMARY KEY,
-    ticket VARCHAR(6) NOT NULL,
+    ticket_id VARCHAR(6) PRIMARY KEY,
     price INTEGER NOT NULL,
     amount INTEGER NOT NULL
 );
@@ -15,5 +14,5 @@ CREATE TABLE user_ticket (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     ticket_id INTEGER NOT NULL,
-    FOREIGN KEY (ticket_id) REFERENCES lottery(id)
+    FOREIGN KEY (ticket_id) REFERENCES lottery(ticket_id)
 );
