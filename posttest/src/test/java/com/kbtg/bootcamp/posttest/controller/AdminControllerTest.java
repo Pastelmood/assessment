@@ -41,8 +41,8 @@ class AdminControllerTest {
     }
 
     @Test
-    @DisplayName("Create lottery should be return status 201 created and ticket value is 000000")
-    void createLotteryShouldBeReturnStatusCreated() throws Exception {
+    @DisplayName("Should be create lottery (201)")
+    void shouldBeCreateLottery() throws Exception {
 
         LotteryRequest lotteryRequest = new LotteryRequest("000000", 80, 1);
         String request = objectWriter.writeValueAsString(lotteryRequest);
@@ -63,8 +63,8 @@ class AdminControllerTest {
     }
 
     @Test
-    @DisplayName("Create lottery with ticket AAA000 should be return status 400 bad request")
-    void createLotteryWithLetterShouldBeReturnStatusBadRequest() throws Exception {
+    @DisplayName("Should be Bad request (400) with ticket id is not number")
+    void shouldBeBadRequestWithTicketIdIsNotNumber() throws Exception {
         LotteryRequest lotteryRequest = new LotteryRequest("AAA000", 80, 1);
         String request = objectWriter.writeValueAsString(lotteryRequest);
 
@@ -77,8 +77,8 @@ class AdminControllerTest {
     }
 
     @Test
-    @DisplayName("Create lottery with ticket 12345 (less than 6 letters) should be return status 400 bad request")
-    void createLotteryWithLessThan6LetterShouldBeReturnStatusBadRequest() throws Exception {
+    @DisplayName("Should be Bad request (400) with Ticket Id less than 6 digits")
+    void shouldBeBadRequestWithTicketIdIsLessThanSixDigits() throws Exception {
         LotteryRequest lotteryRequest = new LotteryRequest("12345", 80, 1);
         String request = objectWriter.writeValueAsString(lotteryRequest);
 
@@ -91,20 +91,20 @@ class AdminControllerTest {
     }
 
     @Test
-    @DisplayName("Create lottery with price is 2K (not number) should be return status 400 bad request")
-    void createLotteryWithNotNumberOfPriceShouldBeReturnStatusBadRequest() throws Exception {
+    @DisplayName("Should be Bad request (400) with price is not number")
+    void shouldBeBadRequestWithPriceIsNotNumber() throws Exception {
 
         // Perform the POST request
         mockMvc.perform(post("/admin/lotteries")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content("{\"ticket\": \"000000\", \"price\": \"2K\", \"amount\": 1}"))
+                        .content("{\"ticket\": \"000000\", \"price\": \"eighty\", \"amount\": 1}"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    @DisplayName("Create lottery with price is less than 0 should be return status 400 bad request")
-    void createLotteryWithPriceLessThanZeroShouldBeReturnStatusBadRequest() throws Exception {
+    @DisplayName("Should be Bad Request (400) with price less than 0")
+    void shouldBeBadRequestWithPriceIsLessThanZero() throws Exception {
 
         // Perform the POST request
         mockMvc.perform(post("/admin/lotteries")
@@ -115,8 +115,8 @@ class AdminControllerTest {
     }
 
     @Test
-    @DisplayName("Create lottery with amount is less than 0 should be return status 400 bad request")
-    void createLotteryWithAmountLessThanZeroShouldBeReturnStatusBadRequest() throws Exception {
+    @DisplayName("Should be Bad Request (400) with amount is less than 0")
+    void shouldBeBadRequestWithAmountIsLessThanZero() throws Exception {
 
         // Perform the POST request
         mockMvc.perform(post("/admin/lotteries")
@@ -127,8 +127,8 @@ class AdminControllerTest {
     }
 
     @Test
-    @DisplayName("Create lottery with amount is not number should be return status 400 bad request")
-    void createLotteryWithAmountIsNotNumberShouldBeReturnStatusBadRequest() throws Exception {
+    @DisplayName("Should be Bad Request (400) with amount is not number")
+    void shouldBeBadRequestWithAmountIsNotNumber() throws Exception {
 
         // Perform the POST request
         mockMvc.perform(post("/admin/lotteries")

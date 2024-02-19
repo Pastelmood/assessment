@@ -7,12 +7,12 @@ public interface LotteryService {
 
     TicketsResponse listAvailableLotteries();
 
-    UserLotteriesResponse fetchUserLotteries(int userId);
+    UserLotteriesResponse fetchUserLotteries(String userId);
 
     TicketResponse registerLottery(LotteryRequest lotteryRequest);
 
-    UserTicketIdResponse buyLotteryTicket(int userId, String tickerId);
+    UserTicketIdResponse buyLotteryTicket(String userId, String tickerId);
 
-    TicketResponse sellLotteryTicket(int userId, String tickerId);
+    TicketResponse sellLotteryTicket(String userId, String tickerId);
 
 }

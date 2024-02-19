@@ -42,12 +42,12 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("buyLottery with normal payload should be return 201 and has json path ... id")
-    void buyLottery() throws Exception {
+    @DisplayName("Should be brought lottery (201)")
+    void shouldBeBoughtLottery() throws Exception {
 
         // payload
-        int userId = 1;
-        String ticketId = "000000";
+        String userId = "1234567890";
+        String ticketId = "123456";
 
         // response
         UserTicketIdResponse response = new UserTicketIdResponse(1);
@@ -65,12 +65,12 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("buyLottery with userId less than 1 should be return 400")
-    void buyLotteryWithUserIdLessThanOneShouldBeReturnStatus400() throws Exception {
+    @DisplayName("Should be Bad request (400) with userId is less then 10 digits")
+    void shouldBeBadRequestWithUserIdIsLessThanTenDigits() throws Exception {
 
         // payload
-        int userId = 0;
-        String ticketId = "000000";
+        String userId = "123456789";
+        String ticketId = "123456";
 
 
         mockMvc.perform(post("/users/" + userId + "/lotteries/" + ticketId)
@@ -159,7 +159,7 @@ class UserControllerTest {
     @DisplayName("getUserLottery with normal payload should be return status 200 and jason path are correct")
     void getUserLotteryWithUserIdNormalShouldBeReturnStatus200() throws Exception {
         // payload
-        int userId = 1;
+        String userId = "1234567890";
         List<String> tickets = new ArrayList<>();
         tickets.add("123456");
         tickets.add("222222");
@@ -209,7 +209,7 @@ class UserControllerTest {
     @DisplayName("deleteUserTicket should be return status 200 and jsonPath ... ticket")
     void deleteUserTicketShouldBeReturnStatus200() throws Exception {
         // payload
-        int userId = 1;
+        String userId = "1234567890";
         String ticket = "000000";
 
         // response

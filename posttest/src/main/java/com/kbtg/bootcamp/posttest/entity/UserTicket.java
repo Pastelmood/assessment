@@ -15,13 +15,13 @@ public class UserTicket {
     private int id;
 
     @Column(name = "user_id")
-    private int userId;
+    private String userId;
 
     @ManyToOne
     @JoinColumn(name = "ticket_id")
     private Lottery lottery;
 
-    public UserTicket(int userId, Lottery lottery) {
+    public UserTicket(String userId, Lottery lottery) {
         this.userId = userId;
         this.lottery = lottery;
     }
