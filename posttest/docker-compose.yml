@@ -26,3 +26,4 @@ services:
             SPRING_DATASOURCE_URL: ${DATABASE_URL}
             SPRING_DATASOURCE_USERNAME: posttest
             SPRING_DATASOURCE_PASSWORD: p@ssword888
+            SPRING_PROFILES_ACTIVE: prod
