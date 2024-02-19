@@ -52,7 +52,7 @@ class LotteryControllerTest {
         String response = objectWriter.writeValueAsString(ticketsResponse);
 
         // Mock the behavior of the lotteryService.findAllTickets method
-        when(lotteryService.listAvailableLotteries())
+        when(lotteryService.listAvailableTickets())
                 .thenReturn(ticketsResponse);
 
         mockMvc.perform(get("/lotteries"))

@@ -1,6 +1,6 @@
 package com.kbtg.bootcamp.posttest.controller;
 
-import com.kbtg.bootcamp.posttest.payload.request.LotteryRequest;
+import com.kbtg.bootcamp.posttest.payload.request.TicketRequest;
 import com.kbtg.bootcamp.posttest.payload.response.TicketResponse;
 import com.kbtg.bootcamp.posttest.service.LotteryService;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,12 +44,12 @@ class AdminControllerTest {
     @DisplayName("Create lottery should be return status 201 created and ticket value is 000000")
     void createLotteryShouldBeReturnStatusCreated() throws Exception {
 
-        LotteryRequest lotteryRequest = new LotteryRequest("000000", 80, 1);
-        String request = objectWriter.writeValueAsString(lotteryRequest);
+        TicketRequest ticketRequest = new TicketRequest("000000", 80, 1);
+        String request = objectWriter.writeValueAsString(ticketRequest);
 
         // Mock the behavior of the lotteryService.createLottery method
         TicketResponse response = new TicketResponse("000000");
-        when(lotteryService.registerLottery(any()))
+        when(lotteryService.registerTicket(any()))
                 .thenReturn(response);
 
         // Perform the POST request
@@ -65,8 +65,8 @@ class AdminControllerTest {
     @Test
     @DisplayName("Create lottery with ticket AAA000 should be return status 400 bad request")
     void createLotteryWithLetterShouldBeReturnStatusBadRequest() throws Exception {
-        LotteryRequest lotteryRequest = new LotteryRequest("AAA000", 80, 1);
-        String request = objectWriter.writeValueAsString(lotteryRequest);
+        TicketRequest ticketRequest = new TicketRequest("AAA000", 80, 1);
+        String request = objectWriter.writeValueAsString(ticketRequest);
 
         // Perform the POST request
         mockMvc.perform(post("/admin/lotteries")
@@ -79,8 +79,8 @@ class AdminControllerTest {
     @Test
     @DisplayName("Create lottery with ticket 12345 (less than 6 letters) should be return status 400 bad request")
     void createLotteryWithLessThan6LetterShouldBeReturnStatusBadRequest() throws Exception {
-        LotteryRequest lotteryRequest = new LotteryRequest("12345", 80, 1);
-        String request = objectWriter.writeValueAsString(lotteryRequest);
+        TicketRequest ticketRequest = new TicketRequest("12345", 80, 1);
+        String request = objectWriter.writeValueAsString(ticketRequest);
 
         // Perform the POST request
         mockMvc.perform(post("/admin/lotteries")

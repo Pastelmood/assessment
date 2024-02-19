@@ -18,7 +18,7 @@ public class LotteryController {
 
     @GetMapping("")
     public TicketsResponse getAllLotteries() {
-        return lotteryService.listAvailableLotteries();
+        return lotteryService.listAvailableTickets();
     }
 
 }

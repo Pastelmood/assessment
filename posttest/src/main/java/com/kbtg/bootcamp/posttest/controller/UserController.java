@@ -1,13 +1,10 @@
 package com.kbtg.bootcamp.posttest.controller;
 
 import com.kbtg.bootcamp.posttest.payload.response.TicketResponse;
-import com.kbtg.bootcamp.posttest.payload.response.UserLotteriesResponse;
 import com.kbtg.bootcamp.posttest.payload.response.UserTicketIdResponse;
+import com.kbtg.bootcamp.posttest.payload.response.UserTicketsResponse;
 import com.kbtg.bootcamp.posttest.service.LotteryService;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,10 +22,9 @@ public class UserController {
     @PostMapping("/{userId}/lotteries/{ticketId}")
     public ResponseEntity<UserTicketIdResponse> buyLottery(
             @PathVariable(name = "userId")
-            @NotNull(message = "userId value must not be null")
-            @Min(1)
-            @Digits(integer = Integer.MAX_VALUE, fraction = 0, message = "userId must be an integer")
-            int userId,
+            @NotBlank(message = "User ID value must not be blank")
+            @Pattern(regexp = "\\d{10}", message = "User ID must be a 10-digit number")
+            String userId,
 
             @PathVariable(name = "ticketId")
             @NotNull
@@ -36,29 +32,27 @@ public class UserController {
             String ticketId
     ) {
 
-        UserTicketIdResponse response = lotteryService.buyLotteryTicket(userId, ticketId);
+        UserTicketIdResponse response = lotteryService.buyTicket(userId, ticketId);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/{userId}/lotteries")
-    public UserLotteriesResponse getUserLottery(
-            @PathVariable("userId")
-            @NotNull(message = "userId value must not be null")
-            @Min(1)
-            @Digits(integer = Integer.MAX_VALUE, fraction = 0, message = "userId must be an integer")
-            int userId
+    public UserTicketsResponse getUserLottery(
+            @PathVariable(name = "userId")
+            @NotBlank(message = "User ID value must not be blank")
+            @Pattern(regexp = "\\d{10}", message = "User ID must be a 10-digit number")
+            String userId
     ) {
-        return lotteryService.fetchUserLotteries(userId);
+        return lotteryService.fetchUserTickets(userId);
     }
 
     @DeleteMapping("/{userId}/lotteries/{ticketId}")
     public TicketResponse deleteUserTicket(
             @PathVariable(name = "userId")
-            @NotNull(message = "userId value must not be null")
-            @Min(1)
-            @Digits(integer = Integer.MAX_VALUE, fraction = 0, message = "userId must be an integer")
-            int userId,
+            @NotBlank(message = "User ID value must not be blank")
+            @Pattern(regexp = "\\d{10}", message = "User ID must be a 10-digit number")
+            String userId,
 
             @PathVariable(name = "ticketId")
             @NotNull
@@ -66,7 +60,7 @@ public class UserController {
             String ticketId
     ) {
 
-        return lotteryService.sellLotteryTicket(userId, ticketId);
+        return lotteryService.sellTicket(userId, ticketId);
 
     }
 

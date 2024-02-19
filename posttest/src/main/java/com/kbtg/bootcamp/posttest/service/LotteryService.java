@@ -1,18 +1,18 @@
 package com.kbtg.bootcamp.posttest.service;
 
-import com.kbtg.bootcamp.posttest.payload.request.LotteryRequest;
+import com.kbtg.bootcamp.posttest.payload.request.TicketRequest;
 import com.kbtg.bootcamp.posttest.payload.response.*;
 
 public interface LotteryService {
 
-    TicketsResponse listAvailableLotteries();
+    TicketsResponse listAvailableTickets();
 
-    UserLotteriesResponse fetchUserLotteries(int userId);
+    UserTicketsResponse fetchUserTickets(String userId);
 
-    TicketResponse registerLottery(LotteryRequest lotteryRequest);
+    TicketResponse registerTicket(TicketRequest request);
 
-    UserTicketIdResponse buyLotteryTicket(int userId, String tickerId);
+    UserTicketIdResponse buyTicket(String userId, String tickerId);
 
-    TicketResponse sellLotteryTicket(int userId, String tickerId);
+    TicketResponse sellTicket(String userId, String tickerId);
 
 }

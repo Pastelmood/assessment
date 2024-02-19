@@ -3,8 +3,8 @@ package com.kbtg.bootcamp.posttest.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.kbtg.bootcamp.posttest.payload.response.TicketResponse;
-import com.kbtg.bootcamp.posttest.payload.response.UserLotteriesResponse;
 import com.kbtg.bootcamp.posttest.payload.response.UserTicketIdResponse;
+import com.kbtg.bootcamp.posttest.payload.response.UserTicketsResponse;
 import com.kbtg.bootcamp.posttest.service.LotteryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -53,7 +53,7 @@ class UserControllerTest {
         UserTicketIdResponse response = new UserTicketIdResponse(1);
 
         // Mock the behavior of the lotteryService.createUserTicket method
-        when(lotteryService.buyLotteryTicket(userId, ticketId))
+        when(lotteryService.buyTicket(userId, ticketId))
                 .thenReturn(response);
 
         mockMvc.perform(post("/users/" + userId + "/lotteries/" + ticketId)
@@ -169,10 +169,10 @@ class UserControllerTest {
         int cost = 240;
 
         // response
-        UserLotteriesResponse response = new UserLotteriesResponse(tickets, count, cost);
+        UserTicketsResponse response = new UserTicketsResponse(tickets, count, cost);
 
         // Mock the behavior of the lotteryService.findLotteries method
-        when(lotteryService.fetchUserLotteries(userId))
+        when(lotteryService.fetchUserTickets(userId))
                 .thenReturn(response);
 
         mockMvc.perform(get("/users/" + userId + "/lotteries/"))
@@ -216,7 +216,7 @@ class UserControllerTest {
         TicketResponse response = new TicketResponse(ticket);
 
         // Mock the behavior of the lotteryService.findLotteries method
-        when(lotteryService.sellLotteryTicket(userId, ticket))
+        when(lotteryService.sellTicket(userId, ticket))
                 .thenReturn(response);
 
         mockMvc.perform(delete("/users/" + userId + "/lotteries/" + ticket))

@@ -1,9 +1,9 @@
 package com.kbtg.bootcamp.posttest.service;
 
-import com.kbtg.bootcamp.posttest.entity.Lottery;
+import com.kbtg.bootcamp.posttest.entity.Ticket;
 import com.kbtg.bootcamp.posttest.entity.UserTicket;
 import com.kbtg.bootcamp.posttest.exception.StatusInternalServerErrorException;
-import com.kbtg.bootcamp.posttest.payload.request.LotteryRequest;
+import com.kbtg.bootcamp.posttest.payload.request.TicketRequest;
 import com.kbtg.bootcamp.posttest.payload.response.*;
 import com.kbtg.bootcamp.posttest.repository.LotteryRepository;
 import com.kbtg.bootcamp.posttest.repository.UserTicketRepository;
@@ -28,81 +28,88 @@ public class LotteryServiceImpl implements LotteryService {
 
     @Override
     @Transactional
-    public TicketResponse registerLottery(LotteryRequest request) {
+    public TicketResponse registerTicket(TicketRequest request) {
 
-        // create new Lottery
-        Lottery newLottery = new Lottery(request.ticket(), request.price(), request.amount());
+        // find an existing ticket and throw an exception if one is found.
+        Optional<Ticket> optionalTicket = Optional.ofNullable(lotteryRepository.findByTicketId(request.ticket()));
+        if (optionalTicket.isPresent()) {
+            throw new StatusInternalServerErrorException("Ticket ID " + request.ticket() + " already in the store");
+        }
+
+        // create new Lottery object
+        Ticket ticket = new Ticket(request.ticket(), request.price(), request.amount());
 
         // save Lottery to database
-        lotteryRepository.save(newLottery);
+        lotteryRepository.save(ticket);
 
-        return new TicketResponse(newLottery.getTicketId());
+        return new TicketResponse(ticket.getTicketId());
     }
 
     @Override
-    public TicketsResponse listAvailableLotteries() {
+    public TicketsResponse listAvailableTickets() {
 
-        // retrieve available lotteries in stock.
-        List<Lottery> lotteries = lotteryRepository.findByAmountGreaterThanEqual(1);
+        // retrieve available tickets in stock.
+        List<Ticket> tickets = lotteryRepository.findByAmountGreaterThanEqual(1);
 
-        List<String> availableLotteries = new ArrayList<>();
+        List<String> availableTickets = new ArrayList<>();
         TicketsResponse response = new TicketsResponse();
 
         // response empty list
-        if (lotteries.isEmpty()) {
+        if (tickets.isEmpty()) {
             return response;
         }
 
         // create availableLotteries
-        for (Lottery lottery : lotteries) {
-            availableLotteries.add(lottery.getTicketId());
+        for (Ticket ticket : tickets) {
+            availableTickets.add(ticket.getTicketId());
         }
 
         // add ticket to response object
-        response.setTickets(availableLotteries);
+        response.setTickets(availableTickets);
 
         return response;
     }
 
     @Transactional
     @Override
-    public UserTicketIdResponse buyLotteryTicket(int userId, String tickerId) {
+    public UserTicketIdResponse buyTicket(String userId, String ticketId) {
 
-        // Find the existing availableLotteries in the database by ticket ID.
-        List<Lottery> availableLotteries = lotteryRepository.findByTicketAndAmountGreaterThanEqual(tickerId, 1);
+        // Check whether this ticket is available in the store or not.
+        // find a ticket from ticketId with an amount greater than 0
+        Optional<Ticket> optionalTicket = lotteryRepository.findByTicketIdAndAmountGreaterThanEqual(ticketId, 1);
 
-        if (availableLotteries.isEmpty()) {
+        if (optionalTicket.isEmpty()) {
             throw new StatusInternalServerErrorException(
-                    "Lottery ticket number " + tickerId + " is not available or sold out already");
+                    "Lottery ticket number " + ticketId + " is not available or sold out already");
         }
 
-        // get a lottery object
-        Lottery selectedLottery = availableLotteries.get(0);
+        // get a selectedTicket object
+        Ticket selectedTicket = optionalTicket.get();
 
         // create UserTicket
-        UserTicket userTicket = new UserTicket(userId, selectedLottery);
+        UserTicket userTicket = new UserTicket(userId, selectedTicket);
 
         // save UserTicket to database and receive id of user_ticket
         UserTicketIdResponse response = new UserTicketIdResponse();
         response.setId(userTicketRepository.save(userTicket).getId());
 
         // update amount to database
-        int updateAmount = selectedLottery.getAmount() - 1;
-        selectedLottery.setAmount(updateAmount);
-        lotteryRepository.save(selectedLottery);
+        int updateAmount = selectedTicket.getAmount() - 1;
+        selectedTicket.setAmount(updateAmount);
+        lotteryRepository.save(selectedTicket);
 
         return response;
     }
 
     @Override
-    public UserLotteriesResponse fetchUserLotteries(int userId) {
+    public UserTicketsResponse fetchUserTickets(String userId) {
 
         // find lottery by user id
         List<UserTicket> userTickets = userTicketRepository.findByUserId(userId);
 
         // return empty information
         if (userTickets.isEmpty()) {
-            return new UserLotteriesResponse();
+            return new UserTicketsResponse();
         }
 
         // for collect tickets and calculate price and amount
@@ -111,13 +118,13 @@ public class LotteryServiceImpl implements LotteryService {
         int price = 0;
 
         for (UserTicket userTicket : userTickets) {
-            tickets.add(userTicket.getLottery().getTicketId());
+            tickets.add(userTicket.getTicket().getTicketId());
             count += 1;
-            price += userTicket.getLottery().getPrice();
+            price += userTicket.getTicket().getPrice();
         }
 
         // create UserLotteriesResponse
-        UserLotteriesResponse response = new UserLotteriesResponse();
+        UserTicketsResponse response = new UserTicketsResponse();
         response.setTickets(tickets);
         response.setCount(count);
         response.setCost(price);
@@ -128,7 +135,7 @@ public class LotteryServiceImpl implements LotteryService {
 
     @Override
     @Transactional
-    public TicketResponse sellLotteryTicket(int userId, String tickerId) {
+    public TicketResponse sellTicket(String userId, String tickerId) {
 
         // find lotteries from userId
         List<UserTicket> userTickets = userTicketRepository.findByUserId(userId);
@@ -139,7 +146,7 @@ public class LotteryServiceImpl implements LotteryService {
 
         // find A lottery that of input user.
         Optional<UserTicket> optionalUserTicket = userTickets.stream()
-                .filter(tempLottery -> Objects.equals(tempLottery.getLottery().getTicketId(), tickerId))
+                .filter(tempLottery -> Objects.equals(tempLottery.getTicket().getTicketId(), tickerId))
                 .findFirst();
 
         if (optionalUserTicket.isEmpty()) {
@@ -150,7 +157,7 @@ public class LotteryServiceImpl implements LotteryService {
         UserTicket userTicket = optionalUserTicket.get();
 
         // get A Lottery from this Ticket
-        Lottery lottery = userTicket.getLottery();
+        Ticket lottery = userTicket.getTicket();
 
         // create the response
         TicketResponse response = new TicketResponse(lottery.getTicketId());
