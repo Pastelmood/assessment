@@ -36,7 +36,7 @@ public class LotteryServiceImpl implements LotteryService {
         // save Lottery to database
         lotteryRepository.save(newLottery);
 
-        return new TicketResponse(newLottery.getTicket());
+        return new TicketResponse(newLottery.getTicketId());
     }
 
     @Override
@@ -55,7 +55,7 @@ public class LotteryServiceImpl implements LotteryService {
 
         // create availableLotteries
         for (Lottery lottery : lotteries) {
-            availableLotteries.add(lottery.getTicket());
+            availableLotteries.add(lottery.getTicketId());
         }
 
         // add ticket to response object
@@ -111,7 +111,7 @@ public class LotteryServiceImpl implements LotteryService {
         int price = 0;
 
         for (UserTicket userTicket : userTickets) {
-            tickets.add(userTicket.getLottery().getTicket());
+            tickets.add(userTicket.getLottery().getTicketId());
             count += 1;
             price += userTicket.getLottery().getPrice();
         }
@@ -139,7 +139,7 @@ public class LotteryServiceImpl implements LotteryService {
 
         // find A lottery that of input user.
         Optional<UserTicket> optionalUserTicket = userTickets.stream()
-                .filter(tempLottery -> Objects.equals(tempLottery.getLottery().getTicket(), tickerId))
+                .filter(tempLottery -> Objects.equals(tempLottery.getLottery().getTicketId(), tickerId))
                 .findFirst();
 
         if (optionalUserTicket.isEmpty()) {
@@ -153,7 +153,7 @@ public class LotteryServiceImpl implements LotteryService {
         Lottery lottery = userTicket.getLottery();
 
         // create the response
-        TicketResponse response = new TicketResponse(lottery.getTicket());
+        TicketResponse response = new TicketResponse(lottery.getTicketId());
 
         // remove UserTicket
         userTicketRepository.delete(userTicket);
