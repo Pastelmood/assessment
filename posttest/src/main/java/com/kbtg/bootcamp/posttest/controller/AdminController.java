@@ -1,6 +1,6 @@
 package com.kbtg.bootcamp.posttest.controller;
 
-import com.kbtg.bootcamp.posttest.payload.request.LotteryRequest;
+import com.kbtg.bootcamp.posttest.payload.request.TicketRequest;
 import com.kbtg.bootcamp.posttest.payload.response.TicketResponse;
 import com.kbtg.bootcamp.posttest.service.LotteryService;
 import jakarta.validation.Valid;
@@ -24,8 +24,8 @@ public class AdminController {
     }
 
     @PostMapping("/lotteries")
-    public ResponseEntity<TicketResponse> createLottery(@Valid @RequestBody LotteryRequest lotteryRequest) {
-        return new ResponseEntity<>(lotteryService.registerLottery(lotteryRequest), HttpStatus.CREATED);
+    public ResponseEntity<TicketResponse> createLottery(@Valid @RequestBody TicketRequest ticketRequest) {
+        return new ResponseEntity<>(lotteryService.registerTicket(ticketRequest), HttpStatus.CREATED);
     }
 
 }

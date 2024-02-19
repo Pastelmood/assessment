@@ -11,7 +11,7 @@ services:
             POSTGRES_USER: posttest
             POSTGRES_PASSWORD: p@ssword888
         volumes:
-            - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+            - ./db-prepare/init.sql:/docker-entrypoint-initdb.d/init.sql
 
     springbootapp:
         container_name: posttest-spring-boot-lottery-shop

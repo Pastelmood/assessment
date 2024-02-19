@@ -40,8 +40,8 @@ class LotteryControllerTest {
     }
 
     @Test
-    @DisplayName("Get /lotteries should be return status 200 and json path tickets ")
-    void getLotteriesShouldReturnStatusOKAndLotteryList() throws Exception {
+    @DisplayName("Should be retrieve tickets (200)")
+    void shouldBeRetrieveTickets() throws Exception {
 
         List<String> tickets = new ArrayList<>();
         tickets.add("123456");
@@ -52,7 +52,7 @@ class LotteryControllerTest {
         String response = objectWriter.writeValueAsString(ticketsResponse);
 
         // Mock the behavior of the lotteryService.findAllTickets method
-        when(lotteryService.listAvailableLotteries())
+        when(lotteryService.listAvailableTickets())
                 .thenReturn(ticketsResponse);
 
         mockMvc.perform(get("/lotteries"))
