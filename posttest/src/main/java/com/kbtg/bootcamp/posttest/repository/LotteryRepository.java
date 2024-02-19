@@ -9,9 +9,9 @@ import java.util.List;
 @Repository
 public interface LotteryRepository extends JpaRepository<Lottery, Integer> {
 
-    List<Lottery> findByTicket(String ticket);
+    List<Lottery> findByTicket(String ticketId);
 
-    List<Lottery> findByTicketAndAmountGreaterThanEqual(String ticket, int amount);
+    List<Lottery> findByTicketAndAmountGreaterThanEqual(String ticketId, int amount);
 
     List<Lottery> findByAmountGreaterThanEqual(int amount);
 
