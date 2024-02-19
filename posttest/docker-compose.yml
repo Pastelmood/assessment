@@ -18,6 +18,7 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
+        image: posttest-springbootapp-lottery
         ports:
             - "8888:8888"
         depends_on:
