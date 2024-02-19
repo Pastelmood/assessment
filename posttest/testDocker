@@ -1,7 +1,0 @@
-FROM amazoncorretto:17-alpine3.19 as builder
-WORKDIR /app
-ADD . .
-RUN ls -l gradle/wrapper
-RUN ["java", "-jar", "gradle/wrapper/gradle-wrapper.jar", "bootJar"]
-
-# docker build -f testDocker -t java-spring-boot-testtest:latest .
