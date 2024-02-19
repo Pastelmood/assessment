@@ -18,7 +18,7 @@ public class WebSecurityConfig {
 
         UserDetails admin = User.builder()
                 .username("admin")
-                .password("{noop}password")
+                .password("{bcrypt}$2a$10$N/MxTiPPnRs5R5sAiXrFpehI6nTzQRpACcv7kyukQ6VxqYPPT5e3i")
                 .roles("ADMIN")
                 .build();
 

@@ -137,5 +137,4 @@ class AdminControllerTest {
                         .content("{\"ticket\": \"000000\", \"price\": 80, \"amount\": \"45ea\"}"))
                 .andExpect(status().isBadRequest());
     }
-
 }
