@@ -65,6 +65,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Should be Bad request (400) with ticket id is not number")
     void shouldBeBadRequestWithTicketIdIsNotNumber() throws Exception {
+
         TicketRequest ticketRequest = new TicketRequest("AAA000", 80, 1);
         String request = objectWriter.writeValueAsString(ticketRequest);
 
@@ -79,6 +80,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Should be Bad request (400) with Ticket Id less than 6 digits")
     void shouldBeBadRequestWithTicketIdIsLessThanSixDigits() throws Exception {
+
         TicketRequest ticketRequest = new TicketRequest("12345", 80, 1);
         String request = objectWriter.writeValueAsString(ticketRequest);
 

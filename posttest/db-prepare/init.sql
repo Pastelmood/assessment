@@ -15,4 +15,5 @@ CREATE TABLE user_ticket (
     user_id VARCHAR(10)  NOT NULL,
     ticket_id VARCHAR(6)  NOT NULL,
     FOREIGN KEY (ticket_id) REFERENCES lottery(ticket_id)
+
 );
