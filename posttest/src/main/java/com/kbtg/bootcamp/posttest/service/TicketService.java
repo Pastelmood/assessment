@@ -3,7 +3,7 @@ package com.kbtg.bootcamp.posttest.service;
 import com.kbtg.bootcamp.posttest.payload.request.TicketRequest;
 import com.kbtg.bootcamp.posttest.payload.response.*;
 
-public interface LotteryService {
+public interface TicketService {
 
     TicketsResponse listAvailableTickets();
 

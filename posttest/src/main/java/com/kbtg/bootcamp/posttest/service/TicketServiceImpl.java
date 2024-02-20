@@ -5,7 +5,7 @@ import com.kbtg.bootcamp.posttest.entity.UserTicket;
 import com.kbtg.bootcamp.posttest.exception.StatusInternalServerErrorException;
 import com.kbtg.bootcamp.posttest.payload.request.TicketRequest;
 import com.kbtg.bootcamp.posttest.payload.response.*;
-import com.kbtg.bootcamp.posttest.repository.LotteryRepository;
+import com.kbtg.bootcamp.posttest.repository.TicketRepository;
 import com.kbtg.bootcamp.posttest.repository.UserTicketRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -16,13 +16,13 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class LotteryServiceImpl implements LotteryService {
+public class TicketServiceImpl implements TicketService {
 
-    private final LotteryRepository lotteryRepository;
+    private final TicketRepository ticketRepository;
     private final UserTicketRepository userTicketRepository;
 
-    public LotteryServiceImpl(LotteryRepository lotteryRepository, UserTicketRepository userTicketRepository) {
-        this.lotteryRepository = lotteryRepository;
+    public TicketServiceImpl(TicketRepository ticketRepository, UserTicketRepository userTicketRepository) {
+        this.ticketRepository = ticketRepository;
         this.userTicketRepository = userTicketRepository;
     }
 
@@ -31,7 +31,7 @@ public class LotteryServiceImpl implements LotteryService {
     public TicketResponse registerTicket(TicketRequest request) {
 
         // find an existing ticket and throw an exception if one is found.
-        Optional<Ticket> optionalTicket = Optional.ofNullable(lotteryRepository.findByTicketId(request.ticket()));
+        Optional<Ticket> optionalTicket = ticketRepository.findByTicketId(request.ticket());
         if (optionalTicket.isPresent()) {
             throw new StatusInternalServerErrorException("Ticket ID " + request.ticket() + " already in the store");
         }
@@ -40,7 +40,7 @@ public class LotteryServiceImpl implements LotteryService {
         Ticket ticket = new Ticket(request.ticket(), request.price(), request.amount());
 
         // save Lottery to database
-        lotteryRepository.save(ticket);
+        ticketRepository.save(ticket);
 
         return new TicketResponse(ticket.getTicketId());
     }
@@ -49,7 +49,7 @@ public class LotteryServiceImpl implements LotteryService {
     public TicketsResponse listAvailableTickets() {
 
         // retrieve available tickets in stock.
-        List<Ticket> tickets = lotteryRepository.findByAmountGreaterThanEqual(1);
+        List<Ticket> tickets = ticketRepository.findByAmountGreaterThanEqual(1);
 
         List<String> availableTickets = new ArrayList<>();
         TicketsResponse response = new TicketsResponse();
@@ -76,11 +76,11 @@ public class LotteryServiceImpl implements LotteryService {
 
         // Check whether this ticket is available in the store or not.
         // find a ticket from ticketId with an amount greater than 0
-        Optional<Ticket> optionalTicket = lotteryRepository.findByTicketIdAndAmountGreaterThanEqual(ticketId, 1);
+        Optional<Ticket> optionalTicket = ticketRepository.findByTicketIdAndAmountGreaterThanEqual(ticketId, 1);
 
         if (optionalTicket.isEmpty()) {
             throw new StatusInternalServerErrorException(
-                    "Lottery ticket number " + ticketId + " is not available or sold out already");
+                    "Ticket number " + ticketId + " is not available or sold out already");
         }
 
         // get a selectedTicket object
@@ -96,7 +96,7 @@ public class LotteryServiceImpl implements LotteryService {
         // update amount to database
         int updateAmount = selectedTicket.getAmount() - 1;
         selectedTicket.setAmount(updateAmount);
-        lotteryRepository.save(selectedTicket);
+        ticketRepository.save(selectedTicket);
 
         return response;
     }
@@ -168,7 +168,7 @@ public class LotteryServiceImpl implements LotteryService {
         // update Amount to Lottery
         int newAmount = lottery.getAmount() + 1;
         lottery.setAmount(newAmount);
-        lotteryRepository.save(lottery);
+        ticketRepository.save(lottery);
 
         return response;
 

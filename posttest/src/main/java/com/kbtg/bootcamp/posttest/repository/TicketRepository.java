@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface LotteryRepository extends JpaRepository<Ticket, String> {
+public interface TicketRepository extends JpaRepository<Ticket, String> {
 
-    Ticket findByTicketId(String ticketId);
+    Optional<Ticket> findByTicketId(String ticketId);
 
     Optional<Ticket> findByTicketIdAndAmountGreaterThanEqual(String ticketId, int amount);
 

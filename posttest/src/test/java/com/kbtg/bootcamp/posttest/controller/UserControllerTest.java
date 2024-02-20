@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.kbtg.bootcamp.posttest.payload.response.TicketResponse;
 import com.kbtg.bootcamp.posttest.payload.response.UserTicketIdResponse;
 import com.kbtg.bootcamp.posttest.payload.response.UserTicketsResponse;
-import com.kbtg.bootcamp.posttest.service.LotteryService;
+import com.kbtg.bootcamp.posttest.service.TicketService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,11 +33,11 @@ class UserControllerTest {
     ObjectWriter objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
     @Mock
-    LotteryService lotteryService;
+    TicketService ticketService;
 
     @BeforeEach
     void setUp() {
-        UserController userController = new UserController(lotteryService);
+        UserController userController = new UserController(ticketService);
         mockMvc = MockMvcBuilders.standaloneSetup(userController).alwaysDo(print()).build();
     }
 
@@ -53,7 +53,7 @@ class UserControllerTest {
         UserTicketIdResponse response = new UserTicketIdResponse(1);
 
         // Mock the behavior of the lotteryService.createUserTicket method
-        when(lotteryService.buyTicket(userId, ticketId))
+        when(ticketService.buyTicket(userId, ticketId))
                 .thenReturn(response);
 
         mockMvc.perform(post("/users/" + userId + "/lotteries/" + ticketId)
@@ -173,7 +173,7 @@ class UserControllerTest {
         UserTicketsResponse response = new UserTicketsResponse(tickets, count, cost);
 
         // Mock the behavior of the lotteryService.findLotteries method
-        when(lotteryService.fetchUserTickets(userId))
+        when(ticketService.fetchUserTickets(userId))
                 .thenReturn(response);
 
         mockMvc.perform(get("/users/" + userId + "/lotteries/"))
@@ -228,7 +228,7 @@ class UserControllerTest {
         TicketResponse response = new TicketResponse(ticket);
 
         // Mock the behavior of the lotteryService.findLotteries method
-        when(lotteryService.sellTicket(userId, ticket))
+        when(ticketService.sellTicket(userId, ticket))
                 .thenReturn(response);
 
         mockMvc.perform(delete("/users/" + userId + "/lotteries/" + ticket))
