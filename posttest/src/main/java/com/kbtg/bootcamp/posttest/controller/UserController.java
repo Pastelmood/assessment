@@ -3,7 +3,7 @@ package com.kbtg.bootcamp.posttest.controller;
 import com.kbtg.bootcamp.posttest.payload.response.TicketResponse;
 import com.kbtg.bootcamp.posttest.payload.response.UserTicketIdResponse;
 import com.kbtg.bootcamp.posttest.payload.response.UserTicketsResponse;
-import com.kbtg.bootcamp.posttest.service.LotteryService;
+import com.kbtg.bootcamp.posttest.service.TicketService;
 import jakarta.validation.constraints.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 public class UserController {
 
-    private final LotteryService lotteryService;
+    private final TicketService ticketService;
 
-    public UserController(LotteryService lotteryService) {
-        this.lotteryService = lotteryService;
+    public UserController(TicketService ticketService) {
+        this.ticketService = ticketService;
     }
 
     @PostMapping("/{userId}/lotteries/{ticketId}")
@@ -32,7 +32,7 @@ public class UserController {
             String ticketId
     ) {
 
-        UserTicketIdResponse response = lotteryService.buyTicket(userId, ticketId);
+        UserTicketIdResponse response = ticketService.buyTicket(userId, ticketId);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -44,7 +44,7 @@ public class UserController {
             @Pattern(regexp = "\\d{10}", message = "User ID must be a 10-digit number")
             String userId
     ) {
-        return lotteryService.fetchUserTickets(userId);
+        return ticketService.fetchUserTickets(userId);
     }
 
     @DeleteMapping("/{userId}/lotteries/{ticketId}")
@@ -60,7 +60,7 @@ public class UserController {
             String ticketId
     ) {
 
-        return lotteryService.sellTicket(userId, ticketId);
+        return ticketService.sellTicket(userId, ticketId);
 
     }
 
