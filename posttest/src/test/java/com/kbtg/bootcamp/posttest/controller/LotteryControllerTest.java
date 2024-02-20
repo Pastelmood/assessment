@@ -3,7 +3,7 @@ package com.kbtg.bootcamp.posttest.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.kbtg.bootcamp.posttest.payload.response.TicketsResponse;
-import com.kbtg.bootcamp.posttest.service.LotteryService;
+import com.kbtg.bootcamp.posttest.service.TicketService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,11 +31,11 @@ class LotteryControllerTest {
     ObjectWriter objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
     @Mock
-    LotteryService lotteryService;
+    TicketService ticketService;
 
     @BeforeEach
     void setUp() {
-        LotteryController lotteryController = new LotteryController(lotteryService);
+        LotteryController lotteryController = new LotteryController(ticketService);
         mockMvc = MockMvcBuilders.standaloneSetup(lotteryController).alwaysDo(print()).build();
     }
 
@@ -52,7 +52,7 @@ class LotteryControllerTest {
         String response = objectWriter.writeValueAsString(ticketsResponse);
 
         // Mock the behavior of the lotteryService.findAllTickets method
-        when(lotteryService.listAvailableTickets())
+        when(ticketService.listAvailableTickets())
                 .thenReturn(ticketsResponse);
 
         mockMvc.perform(get("/lotteries"))

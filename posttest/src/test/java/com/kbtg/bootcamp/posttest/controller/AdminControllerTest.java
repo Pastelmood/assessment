@@ -2,7 +2,7 @@ package com.kbtg.bootcamp.posttest.controller;
 
 import com.kbtg.bootcamp.posttest.payload.request.TicketRequest;
 import com.kbtg.bootcamp.posttest.payload.response.TicketResponse;
-import com.kbtg.bootcamp.posttest.service.LotteryService;
+import com.kbtg.bootcamp.posttest.service.TicketService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,11 +32,11 @@ class AdminControllerTest {
     ObjectWriter objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
     @Mock
-    LotteryService lotteryService;
+    TicketService ticketService;
 
     @BeforeEach
     void setUp() {
-        AdminController adminController = new AdminController(lotteryService);
+        AdminController adminController = new AdminController(ticketService);
         mockMvc = MockMvcBuilders.standaloneSetup(adminController).alwaysDo(print()).build();
     }
 
@@ -49,7 +49,7 @@ class AdminControllerTest {
 
         // Mock the behavior of the lotteryService.createLottery method
         TicketResponse response = new TicketResponse("000000");
-        when(lotteryService.registerTicket(any()))
+        when(ticketService.registerTicket(any()))
                 .thenReturn(response);
 
         // Perform the POST request
