@@ -31,13 +31,13 @@ public class TicketServiceImpl implements TicketService {
     public TicketResponse registerTicket(TicketRequest request) {
 
         // find an existing ticket and throw an exception if one is found.
-        Optional<Ticket> optionalTicket = ticketRepository.findByTicketId(request.ticket());
+        Optional<Ticket> optionalTicket = ticketRepository.findByTicketId(request.getTicket());
         if (optionalTicket.isPresent()) {
-            throw new StatusInternalServerErrorException("Ticket ID " + request.ticket() + " already in the store");
+            throw new StatusInternalServerErrorException("Ticket ID " + request.getTicket() + " already in the store");
         }
 
         // create new Lottery object
-        Ticket ticket = new Ticket(request.ticket(), request.price(), request.amount());
+        Ticket ticket = new Ticket(request.getTicket(), request.getPrice(), request.getAmount());
 
         // save Lottery to database
         ticketRepository.save(ticket);
@@ -90,8 +90,10 @@ public class TicketServiceImpl implements TicketService {
         UserTicket userTicket = new UserTicket(userId, selectedTicket);
 
         // save UserTicket to database and receive id of user_ticket
+        UserTicket savedUserTicket = userTicketRepository.save(userTicket);
+
         UserTicketIdResponse response = new UserTicketIdResponse();
-        response.setId(userTicketRepository.save(userTicket).getId());
+        response.setId(savedUserTicket.getId());
 
         // update amount to database
         int updateAmount = selectedTicket.getAmount() - 1;
@@ -146,7 +148,7 @@ public class TicketServiceImpl implements TicketService {
 
         // find A lottery that of input user.
         Optional<UserTicket> optionalUserTicket = userTickets.stream()
-                .filter(tempLottery -> Objects.equals(tempLottery.getTicket().getTicketId(), tickerId))
+                .filter(tempTicket -> Objects.equals(tempTicket.getTicket().getTicketId(), tickerId))
                 .findFirst();
 
         if (optionalUserTicket.isEmpty()) {
@@ -157,18 +159,18 @@ public class TicketServiceImpl implements TicketService {
         UserTicket userTicket = optionalUserTicket.get();
 
         // get A Lottery from this Ticket
-        Ticket lottery = userTicket.getTicket();
+        Ticket ticket = userTicket.getTicket();
 
         // create the response
-        TicketResponse response = new TicketResponse(lottery.getTicketId());
+        TicketResponse response = new TicketResponse(ticket.getTicketId());
 
         // remove UserTicket
         userTicketRepository.delete(userTicket);
 
         // update Amount to Lottery
-        int newAmount = lottery.getAmount() + 1;
-        lottery.setAmount(newAmount);
-        ticketRepository.save(lottery);
+        int newAmount = ticket.getAmount() + 1;
+        ticket.setAmount(newAmount);
+        ticketRepository.save(ticket);
 
         return response;
 

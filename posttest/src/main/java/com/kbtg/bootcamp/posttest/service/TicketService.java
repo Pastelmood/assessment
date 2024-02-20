@@ -11,8 +11,8 @@ public interface TicketService {
 
     TicketResponse registerTicket(TicketRequest request);
 
-    UserTicketIdResponse buyTicket(String userId, String tickerId);
+    UserTicketIdResponse buyTicket(String userId, String ticketId);
 
-    TicketResponse sellTicket(String userId, String tickerId);
+    TicketResponse sellTicket(String userId, String ticketId);
 
 }
