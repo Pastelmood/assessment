@@ -27,14 +27,12 @@ public class UserController {
             String userId,
 
             @PathVariable(name = "ticketId")
-            @NotNull
+            @NotBlank
             @Pattern(regexp = "\\d{6}", message = "Value must be a 6-digit number")
             String ticketId
     ) {
 
-        UserTicketIdResponse response = ticketService.buyTicket(userId, ticketId);
-
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(ticketService.buyTicket(userId, ticketId), HttpStatus.CREATED);
     }
 
     @GetMapping("/{userId}/lotteries")
@@ -55,7 +53,7 @@ public class UserController {
             String userId,
 
             @PathVariable(name = "ticketId")
-            @NotNull
+            @NotBlank
             @Pattern(regexp = "\\d{6}", message = "Value must be a 6-digit number")
             String ticketId
     ) {
