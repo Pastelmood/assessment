@@ -37,7 +37,11 @@ public class TicketServiceImpl implements TicketService {
         }
 
         // create new Lottery object
-        Ticket ticket = new Ticket(request.getTicket(), request.getPrice(), request.getAmount());
+        Ticket ticket = Ticket.builder()
+                .ticketId(request.getTicket())
+                .price(request.getPrice())
+                .amount(request.getAmount())
+                .build();
 
         // save Lottery to database
         ticketRepository.save(ticket);
@@ -87,20 +91,18 @@ public class TicketServiceImpl implements TicketService {
         Ticket selectedTicket = optionalTicket.get();
 
         // create UserTicket
-        UserTicket userTicket = new UserTicket(userId, selectedTicket);
+        UserTicket userTicket = UserTicket.builder().userId(userId).ticket(selectedTicket).build();
 
         // save UserTicket to database and receive id of user_ticket
         UserTicket savedUserTicket = userTicketRepository.save(userTicket);
-
-        UserTicketIdResponse response = new UserTicketIdResponse();
-        response.setId(savedUserTicket.getId());
 
         // update amount to database
         int updateAmount = selectedTicket.getAmount() - 1;
         selectedTicket.setAmount(updateAmount);
         ticketRepository.save(selectedTicket);
 
-        return response;
+        // return id of table user_ticket
+        return UserTicketIdResponse.builder().id(savedUserTicket.getId()).build();
     }
 
     @Override
@@ -114,24 +116,23 @@ public class TicketServiceImpl implements TicketService {
             return new UserTicketsResponse();
         }
 
-        // for collect tickets and calculate price and amount
+        // for collect tickets and calculate cost and amount
         List<String> tickets = new ArrayList<>();
         int count = 0;
-        int price = 0;
+        int cost = 0;
 
         for (UserTicket userTicket : userTickets) {
             tickets.add(userTicket.getTicket().getTicketId());
             count += 1;
-            price += userTicket.getTicket().getPrice();
+            cost += userTicket.getTicket().getPrice();
         }
 
         // create UserLotteriesResponse
-        UserTicketsResponse response = new UserTicketsResponse();
-        response.setTickets(tickets);
-        response.setCount(count);
-        response.setCost(price);
-
-        return response;
+        return UserTicketsResponse.builder()
+                .tickets(tickets)
+                .count(count)
+                .cost(cost)
+                .build();
 
     }
 
@@ -161,9 +162,6 @@ public class TicketServiceImpl implements TicketService {
         // get A Lottery from this Ticket
         Ticket ticket = userTicket.getTicket();
 
-        // create the response
-        TicketResponse response = new TicketResponse(ticket.getTicketId());
-
         // remove UserTicket
         userTicketRepository.delete(userTicket);
 
@@ -172,7 +170,8 @@ public class TicketServiceImpl implements TicketService {
         ticket.setAmount(newAmount);
         ticketRepository.save(ticket);
 
-        return response;
+        // response sold ticket id
+        return TicketResponse.builder().ticket(ticket.getTicketId()).build();
 
     }
 }

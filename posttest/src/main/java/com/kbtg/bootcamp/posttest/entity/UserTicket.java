@@ -25,8 +25,4 @@ public class UserTicket {
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 
-    public UserTicket(String userId, Ticket ticket) {
-        this.userId = userId;
-        this.ticket = ticket;
-    }
 }

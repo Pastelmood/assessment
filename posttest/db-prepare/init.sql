@@ -17,3 +17,7 @@ CREATE TABLE user_ticket (
     FOREIGN KEY (ticket_id) REFERENCES lottery(ticket_id)
 
 );
+
+-- Insert sample data
+INSERT INTO lottery (ticket_id, price, amount)
+VALUES ('000001', 80, 1), ('000002', 80, 1);
