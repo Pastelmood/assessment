@@ -16,13 +16,13 @@ import java.util.List;
 public class Ticket {
 
     @Id
-    @Column(name = "ticket_id")
+    @Column(name = "ticket_id", nullable = false, length = 6)
     private String ticketId;
 
-    @Column(name = "price")
+    @Column(name = "price", nullable = false)
     private int price;
 
-    @Column(name = "amount")
+    @Column(name = "amount", nullable = false)
     private int amount;
 
     @OneToMany(mappedBy = "ticket")

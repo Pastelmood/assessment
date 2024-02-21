@@ -18,7 +18,7 @@ public class UserTicket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "user_id")
+    @Column(name = "user_id", nullable = false, length = 10)
     private String userId;
 
     @ManyToOne
