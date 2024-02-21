@@ -24,7 +24,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -41,7 +40,6 @@ class TicketServiceImplTest {
     private TicketServiceImpl ticketService;
 
     private Ticket ticket;
-
 
     private TicketRequest ticketRequest;
 
@@ -82,8 +80,6 @@ class TicketServiceImplTest {
 
         // when - action or the behaviour that we are going to test
         TicketResponse actual = ticketService.registerTicket(ticketRequest);
-
-        System.out.println(actual);
 
         // then verify
         assertEquals(actual, ticketResponse);

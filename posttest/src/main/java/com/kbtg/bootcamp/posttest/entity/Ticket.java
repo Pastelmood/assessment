@@ -28,9 +28,4 @@ public class Ticket {
     @OneToMany(mappedBy = "ticket")
     private List<UserTicket> userTickets;
 
-    public Ticket(String ticketId, int price, int amount) {
-        this.ticketId = ticketId;
-        this.price = price;
-        this.amount = amount;
-    }
 }
