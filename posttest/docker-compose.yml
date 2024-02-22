@@ -4,6 +4,7 @@ services:
     postgres:
         container_name: posttest-postgres-database
         image: postgres:latest
+        restart: always
         ports:
             - "5432:5432"
         environment:
@@ -12,6 +13,8 @@ services:
             POSTGRES_PASSWORD: p@ssword888
         volumes:
             - ./db-prepare/init.sql:/docker-entrypoint-initdb.d/init.sql
+        networks:
+            - backend-network
 
     springbootapp:
         container_name: posttest-spring-boot-lottery-shop
@@ -19,6 +22,7 @@ services:
             context: .
             dockerfile: Dockerfile
         image: posttest-springbootapp-lottery
+        restart: always
         ports:
             - "8888:8888"
         depends_on:
@@ -28,3 +32,9 @@ services:
             SPRING_DATASOURCE_USERNAME: posttest
             SPRING_DATASOURCE_PASSWORD: p@ssword888
             SPRING_PROFILES_ACTIVE: prod
+        networks:
+            - backend-network
+
+networks:
+    backend-network:
+        driver: bridge
