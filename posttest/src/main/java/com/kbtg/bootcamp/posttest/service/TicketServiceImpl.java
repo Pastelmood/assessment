@@ -97,11 +97,6 @@ public class TicketServiceImpl implements TicketService {
         // find lottery by user id
         List<UserTicket> userTickets = userTicketRepository.findByUserId(userId);
 
-        // return empty information
-        if (userTickets.isEmpty()) {
-            return new UserTicketsResponse();
-        }
-
         // create UserLotteriesResponse
         return UserTicketsResponse.builder()
                 .tickets(userTickets.stream().map(UserTicket::getTicket).map(Ticket::getTicketId).toList())

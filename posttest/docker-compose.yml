@@ -12,6 +12,8 @@ services:
             POSTGRES_PASSWORD: p@ssword888
         volumes:
             - ./db-prepare/init.sql:/docker-entrypoint-initdb.d/init.sql
+        networks:
+            - backend-network
 
     springbootapp:
         container_name: posttest-spring-boot-lottery-shop
@@ -28,3 +30,9 @@ services:
             SPRING_DATASOURCE_USERNAME: posttest
             SPRING_DATASOURCE_PASSWORD: p@ssword888
             SPRING_PROFILES_ACTIVE: prod
+        networks:
+            - backend-network
+
+networks:
+    backend-network:
+        driver: bridge
