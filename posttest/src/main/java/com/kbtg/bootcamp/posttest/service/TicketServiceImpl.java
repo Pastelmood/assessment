@@ -55,23 +55,9 @@ public class TicketServiceImpl implements TicketService {
         // retrieve available tickets in stock.
         List<Ticket> tickets = ticketRepository.findByAmountGreaterThanEqual(1);
 
-        List<String> availableTickets = new ArrayList<>();
-        TicketsResponse response = new TicketsResponse();
-
-        // response empty list
-        if (tickets.isEmpty()) {
-            return response;
-        }
-
-        // create availableLotteries
-        for (Ticket ticket : tickets) {
-            availableTickets.add(ticket.getTicketId());
-        }
-
-        // add ticket to response object
-        response.setTickets(availableTickets);
-
-        return response;
+        return TicketsResponse.builder()
+                .tickets(tickets.stream().map(Ticket::getTicketId).toList())
+                .build();
     }
 
     @Transactional
@@ -116,24 +102,12 @@ public class TicketServiceImpl implements TicketService {
             return new UserTicketsResponse();
         }
 
-        // for collect tickets and calculate cost and amount
-        List<String> tickets = new ArrayList<>();
-        int count = 0;
-        int cost = 0;
-
-        for (UserTicket userTicket : userTickets) {
-            tickets.add(userTicket.getTicket().getTicketId());
-            count += 1;
-            cost += userTicket.getTicket().getPrice();
-        }
-
         // create UserLotteriesResponse
         return UserTicketsResponse.builder()
-                .tickets(tickets)
-                .count(count)
-                .cost(cost)
+                .tickets(userTickets.stream().map(UserTicket::getTicket).map(Ticket::getTicketId).toList())
+                .cost(userTickets.stream().map(UserTicket::getTicket).mapToInt(Ticket::getPrice).sum())
+                .count(userTickets.size())
                 .build();
-
     }
 
     @Override

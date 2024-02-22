@@ -133,8 +133,8 @@ class TicketServiceImplTest {
 
     // Unit test for listAvailableTickets method
     @Test
-    @DisplayName("Test for the listAvailableTickets method should return an empty list")
-    public void whenListAvailableTickets_thenReturnEmptyObject() {
+    @DisplayName("Test for the listAvailableTickets method should return an empty TicketsResponse")
+    public void whenNoListAvailableTickets_thenReturnEmptyTicketsResponse() {
 
         // given - precondition or setup
         List<Ticket> tickets = new ArrayList<>();
@@ -145,7 +145,7 @@ class TicketServiceImplTest {
         TicketsResponse actual = ticketService.listAvailableTickets();
 
         // then verify
-        TicketsResponse expected = new TicketsResponse();
+        TicketsResponse expected = TicketsResponse.builder().tickets(new ArrayList<>()).build();
         assertThat(actual).isEqualTo(expected);
 
     }
