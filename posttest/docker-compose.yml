@@ -4,6 +4,7 @@ services:
     postgres:
         container_name: posttest-postgres-database
         image: postgres:latest
+        restart: always
         ports:
             - "5432:5432"
         environment:
@@ -21,6 +22,7 @@ services:
             context: .
             dockerfile: Dockerfile
         image: posttest-springbootapp-lottery
+        restart: always
         ports:
             - "8888:8888"
         depends_on:
