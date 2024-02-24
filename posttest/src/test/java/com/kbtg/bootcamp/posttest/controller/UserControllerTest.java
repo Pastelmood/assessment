@@ -1,11 +1,20 @@
 package com.kbtg.bootcamp.posttest.controller;
 
+import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.kbtg.bootcamp.posttest.payload.response.TicketResponse;
 import com.kbtg.bootcamp.posttest.payload.response.UserTicketIdResponse;
 import com.kbtg.bootcamp.posttest.payload.response.UserTicketsResponse;
 import com.kbtg.bootcamp.posttest.service.TicketService;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,24 +25,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.core.Is.is;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
     MockMvc mockMvc;
 
     ObjectWriter objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
-    @Mock
-    TicketService ticketService;
+    @Mock TicketService ticketService;
 
     @BeforeEach
     void setUp() {
@@ -53,12 +51,12 @@ class UserControllerTest {
         UserTicketIdResponse response = new UserTicketIdResponse(1);
 
         // Mock the behavior of the lotteryService.createUserTicket method
-        when(ticketService.buyTicket(userId, ticketId))
-                .thenReturn(response);
+        when(ticketService.buyTicket(userId, ticketId)).thenReturn(response);
 
-        mockMvc.perform(post("/users/" + userId + "/lotteries/" + ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(
+                        post("/users/" + userId + "/lotteries/" + ticketId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andReturn();
@@ -72,10 +70,10 @@ class UserControllerTest {
         String userId = "123456789";
         String ticketId = "123456";
 
-
-        mockMvc.perform(post("/users/" + userId + "/lotteries/" + ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(
+                        post("/users/" + userId + "/lotteries/" + ticketId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
@@ -88,10 +86,10 @@ class UserControllerTest {
         String userId = "12345678901";
         String ticketId = "123456";
 
-
-        mockMvc.perform(post("/users/" + userId + "/lotteries/" + ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(
+                        post("/users/" + userId + "/lotteries/" + ticketId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
@@ -104,9 +102,10 @@ class UserControllerTest {
         String userId = "ten";
         String ticketId = "000000";
 
-        mockMvc.perform(post("/users/" + userId + "/lotteries/" + ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(
+                        post("/users/" + userId + "/lotteries/" + ticketId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
@@ -119,9 +118,10 @@ class UserControllerTest {
         String userId = "1234567890";
         String ticketId = "12345";
 
-        mockMvc.perform(post("/users/" + userId + "/lotteries/" + ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(
+                        post("/users/" + userId + "/lotteries/" + ticketId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
@@ -134,9 +134,10 @@ class UserControllerTest {
         String userId = "1234567890";
         String ticketId = "1234567";
 
-        mockMvc.perform(post("/users/" + userId + "/lotteries/" + ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(
+                        post("/users/" + userId + "/lotteries/" + ticketId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
@@ -149,9 +150,10 @@ class UserControllerTest {
         String userId = "1234567890";
         String ticketId = "OneTwoThreeFourFive";
 
-        mockMvc.perform(post("/users/" + userId + "/lotteries/" + ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(
+                        post("/users/" + userId + "/lotteries/" + ticketId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
@@ -173,8 +175,7 @@ class UserControllerTest {
         UserTicketsResponse response = new UserTicketsResponse(tickets, count, cost);
 
         // Mock the behavior of the lotteryService.findLotteries method
-        when(ticketService.fetchUserTickets(userId))
-                .thenReturn(response);
+        when(ticketService.fetchUserTickets(userId)).thenReturn(response);
 
         mockMvc.perform(get("/users/" + userId + "/lotteries/"))
                 .andExpect(status().isOk())
@@ -228,8 +229,7 @@ class UserControllerTest {
         TicketResponse response = new TicketResponse(ticket);
 
         // Mock the behavior of the lotteryService.findLotteries method
-        when(ticketService.sellTicket(userId, ticket))
-                .thenReturn(response);
+        when(ticketService.sellTicket(userId, ticket)).thenReturn(response);
 
         mockMvc.perform(delete("/users/" + userId + "/lotteries/" + ticket))
                 .andExpect(status().isOk())
@@ -238,7 +238,8 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("[deleteUserTicket] Should be Bad Request (400) with userId is less than 10 digits")
+    @DisplayName(
+            "[deleteUserTicket] Should be Bad Request (400) with userId is less than 10 digits")
     void shouldBeBadRequestWithUserIdIsLessThanTenDigitsAtDeleteUserTicket() throws Exception {
         // payload
         String userId = "123456789";
@@ -250,7 +251,8 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("[deleteUserTicket] Should be Bad Request (400) with userId is More than 10 digits")
+    @DisplayName(
+            "[deleteUserTicket] Should be Bad Request (400) with userId is More than 10 digits")
     void shouldBeBadRequestWithUserIdIsMoreThanTenDigitsAtDeleteUserTicket() throws Exception {
         // payload
         String userId = "12345678901";
@@ -274,7 +276,8 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("[deleteUserTicket] Should be Bad Request (400) with ticketId is less than 6 digits")
+    @DisplayName(
+            "[deleteUserTicket] Should be Bad Request (400) with ticketId is less than 6 digits")
     void shouldBeBadRequestWithTicketIdIsLessThanSixDigitsAtDeleteUserTicket() throws Exception {
         // payload
         String userId = "1234567890";
@@ -286,7 +289,8 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("[deleteUserTicket] Should be Bad Request (400) with ticketId is more than 6 digits")
+    @DisplayName(
+            "[deleteUserTicket] Should be Bad Request (400) with ticketId is more than 6 digits")
     void shouldBeBadRequestWithTicketIdIsMoreThanSixDigitsAtDeleteUserTicket() throws Exception {
         // payload
         String userId = "1234567890";
@@ -308,5 +312,4 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
-
 }

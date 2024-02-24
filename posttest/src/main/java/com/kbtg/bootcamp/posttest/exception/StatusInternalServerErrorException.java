@@ -5,5 +5,4 @@ public class StatusInternalServerErrorException extends RuntimeException {
     public StatusInternalServerErrorException(String message) {
         super(message);
     }
-
 }

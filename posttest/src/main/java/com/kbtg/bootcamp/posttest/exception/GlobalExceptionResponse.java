@@ -1,7 +1,7 @@
 package com.kbtg.bootcamp.posttest.exception;
 
-import lombok.Data;
 import java.time.LocalDateTime;
+import lombok.Data;
 
 @Data
 public class GlobalExceptionResponse {
@@ -13,5 +13,4 @@ public class GlobalExceptionResponse {
     private String error;
 
     private String message;
-
 }

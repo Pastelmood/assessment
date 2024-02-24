@@ -20,5 +20,4 @@ public class LotteryController {
     public TicketsResponse getAllLotteries() {
         return ticketService.listAvailableTickets();
     }
-
 }

@@ -1,9 +1,8 @@
 package com.kbtg.bootcamp.posttest.exception;
 
-import lombok.Data;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class BadRequestExceptionResponse {
@@ -15,5 +14,4 @@ public class BadRequestExceptionResponse {
     private String error;
 
     private List<String> messages;
-
 }

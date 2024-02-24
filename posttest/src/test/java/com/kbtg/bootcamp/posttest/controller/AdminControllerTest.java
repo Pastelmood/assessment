@@ -1,5 +1,14 @@
 package com.kbtg.bootcamp.posttest.controller;
 
+import static org.hamcrest.core.Is.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.kbtg.bootcamp.posttest.payload.request.TicketRequest;
 import com.kbtg.bootcamp.posttest.payload.response.TicketResponse;
 import com.kbtg.bootcamp.posttest.service.TicketService;
@@ -9,20 +18,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-
-import org.springframework.http.MediaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-
-import static org.hamcrest.core.Is.is;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class AdminControllerTest {
@@ -31,8 +29,7 @@ class AdminControllerTest {
 
     ObjectWriter objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
-    @Mock
-    TicketService ticketService;
+    @Mock TicketService ticketService;
 
     @BeforeEach
     void setUp() {
@@ -49,14 +46,14 @@ class AdminControllerTest {
 
         // Mock the behavior of the lotteryService.createLottery method
         TicketResponse response = new TicketResponse("000000");
-        when(ticketService.registerTicket(any()))
-                .thenReturn(response);
+        when(ticketService.registerTicket(any())).thenReturn(response);
 
         // Perform the POST request
-        mockMvc.perform(post("/admin/lotteries")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content(request))
+        mockMvc.perform(
+                        post("/admin/lotteries")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content(request))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.ticket", is("000000")))
                 .andReturn();
@@ -70,10 +67,11 @@ class AdminControllerTest {
         String request = objectWriter.writeValueAsString(ticketRequest);
 
         // Perform the POST request
-        mockMvc.perform(post("/admin/lotteries")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content(request))
+        mockMvc.perform(
+                        post("/admin/lotteries")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content(request))
                 .andExpect(status().isBadRequest());
     }
 
@@ -85,10 +83,11 @@ class AdminControllerTest {
         String request = objectWriter.writeValueAsString(ticketRequest);
 
         // Perform the POST request
-        mockMvc.perform(post("/admin/lotteries")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content(request))
+        mockMvc.perform(
+                        post("/admin/lotteries")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content(request))
                 .andExpect(status().isBadRequest());
     }
 
@@ -97,10 +96,12 @@ class AdminControllerTest {
     void shouldBeBadRequestWithPriceIsNotNumber() throws Exception {
 
         // Perform the POST request
-        mockMvc.perform(post("/admin/lotteries")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content("{\"ticket\": \"000000\", \"price\": \"eighty\", \"amount\": 1}"))
+        mockMvc.perform(
+                        post("/admin/lotteries")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content(
+                                        "{\"ticket\": \"000000\", \"price\": \"eighty\", \"amount\": 1}"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -109,10 +110,11 @@ class AdminControllerTest {
     void shouldBeBadRequestWithPriceIsLessThanZero() throws Exception {
 
         // Perform the POST request
-        mockMvc.perform(post("/admin/lotteries")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content("{\"ticket\": \"000000\", \"price\": -30, \"amount\": 1}"))
+        mockMvc.perform(
+                        post("/admin/lotteries")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content("{\"ticket\": \"000000\", \"price\": -30, \"amount\": 1}"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -121,10 +123,12 @@ class AdminControllerTest {
     void shouldBeBadRequestWithAmountIsLessThanZero() throws Exception {
 
         // Perform the POST request
-        mockMvc.perform(post("/admin/lotteries")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content("{\"ticket\": \"000000\", \"price\": 80, \"amount\": -88}"))
+        mockMvc.perform(
+                        post("/admin/lotteries")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content(
+                                        "{\"ticket\": \"000000\", \"price\": 80, \"amount\": -88}"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -133,10 +137,12 @@ class AdminControllerTest {
     void shouldBeBadRequestWithAmountIsNotNumber() throws Exception {
 
         // Perform the POST request
-        mockMvc.perform(post("/admin/lotteries")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content("{\"ticket\": \"000000\", \"price\": 80, \"amount\": \"45ea\"}"))
+        mockMvc.perform(
+                        post("/admin/lotteries")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content(
+                                        "{\"ticket\": \"000000\", \"price\": 80, \"amount\": \"45ea\"}"))
                 .andExpect(status().isBadRequest());
     }
 }

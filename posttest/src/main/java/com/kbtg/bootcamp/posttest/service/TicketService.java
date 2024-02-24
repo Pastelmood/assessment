@@ -14,5 +14,4 @@ public interface TicketService {
     UserTicketIdResponse buyTicket(String userId, String ticketId);
 
     TicketResponse sellTicket(String userId, String ticketId);
-
 }
