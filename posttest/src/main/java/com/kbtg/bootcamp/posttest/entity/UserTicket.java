@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity @Table(name = "user_ticket", schema = "public")
+@Entity
+@Table(name = "user_ticket", schema = "public")
 public class UserTicket {
 
     @Id
@@ -24,5 +25,4 @@ public class UserTicket {
     @ManyToOne
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
-
 }

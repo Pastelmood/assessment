@@ -8,12 +8,10 @@ import com.kbtg.bootcamp.posttest.payload.response.*;
 import com.kbtg.bootcamp.posttest.repository.TicketRepository;
 import com.kbtg.bootcamp.posttest.repository.UserTicketRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 @Service
 public class TicketServiceImpl implements TicketService {
@@ -21,7 +19,8 @@ public class TicketServiceImpl implements TicketService {
     private final TicketRepository ticketRepository;
     private final UserTicketRepository userTicketRepository;
 
-    public TicketServiceImpl(TicketRepository ticketRepository, UserTicketRepository userTicketRepository) {
+    public TicketServiceImpl(
+            TicketRepository ticketRepository, UserTicketRepository userTicketRepository) {
         this.ticketRepository = ticketRepository;
         this.userTicketRepository = userTicketRepository;
     }
@@ -33,20 +32,22 @@ public class TicketServiceImpl implements TicketService {
         // find an existing ticket and throw an exception if one is found.
         Optional<Ticket> optionalTicket = ticketRepository.findByTicketId(request.getTicket());
         if (optionalTicket.isPresent()) {
-            throw new StatusInternalServerErrorException("Ticket ID " + request.getTicket() + " already in the store");
+            throw new StatusInternalServerErrorException(
+                    "Ticket ID " + request.getTicket() + " already in the store");
         }
 
         // create new Lottery object
-        Ticket ticket = Ticket.builder()
-                .ticketId(request.getTicket())
-                .price(request.getPrice())
-                .amount(request.getAmount())
-                .build();
+        Ticket ticket =
+                Ticket.builder()
+                        .ticketId(request.getTicket())
+                        .price(request.getPrice())
+                        .amount(request.getAmount())
+                        .build();
 
         // save Lottery to database
         ticketRepository.save(ticket);
 
-        return new TicketResponse(ticket.getTicketId());
+        return TicketResponse.builder().ticket(ticket.getTicketId()).build();
     }
 
     @Override
@@ -66,7 +67,8 @@ public class TicketServiceImpl implements TicketService {
 
         // Check whether this ticket is available in the store or not.
         // find a ticket from ticketId with an amount greater than 0
-        Optional<Ticket> optionalTicket = ticketRepository.findByTicketIdAndAmountGreaterThanEqual(ticketId, 1);
+        Optional<Ticket> optionalTicket =
+                ticketRepository.findByTicketIdAndAmountGreaterThanEqual(ticketId, 1);
 
         if (optionalTicket.isEmpty()) {
             throw new StatusInternalServerErrorException(
@@ -99,8 +101,16 @@ public class TicketServiceImpl implements TicketService {
 
         // create UserLotteriesResponse
         return UserTicketsResponse.builder()
-                .tickets(userTickets.stream().map(UserTicket::getTicket).map(Ticket::getTicketId).toList())
-                .cost(userTickets.stream().map(UserTicket::getTicket).mapToInt(Ticket::getPrice).sum())
+                .tickets(
+                        userTickets.stream()
+                                .map(UserTicket::getTicket)
+                                .map(Ticket::getTicketId)
+                                .toList())
+                .cost(
+                        userTickets.stream()
+                                .map(UserTicket::getTicket)
+                                .mapToInt(Ticket::getPrice)
+                                .sum())
                 .count(userTickets.size())
                 .build();
     }
@@ -117,9 +127,13 @@ public class TicketServiceImpl implements TicketService {
         }
 
         // find A lottery that of input user.
-        Optional<UserTicket> optionalUserTicket = userTickets.stream()
-                .filter(tempTicket -> Objects.equals(tempTicket.getTicket().getTicketId(), tickerId))
-                .findFirst();
+        Optional<UserTicket> optionalUserTicket =
+                userTickets.stream()
+                        .filter(
+                                tempTicket ->
+                                        Objects.equals(
+                                                tempTicket.getTicket().getTicketId(), tickerId))
+                        .findFirst();
 
         if (optionalUserTicket.isEmpty()) {
             throw new StatusInternalServerErrorException("Ticket not found.");
@@ -141,6 +155,5 @@ public class TicketServiceImpl implements TicketService {
 
         // response sold ticket id
         return TicketResponse.builder().ticket(ticket.getTicketId()).build();
-
     }
 }

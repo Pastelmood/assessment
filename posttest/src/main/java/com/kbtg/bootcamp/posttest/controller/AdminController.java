@@ -24,8 +24,9 @@ public class AdminController {
     }
 
     @PostMapping("/lotteries")
-    public ResponseEntity<TicketResponse> createLottery(@Valid @RequestBody TicketRequest ticketRequest) {
-        return new ResponseEntity<>(ticketService.registerTicket(ticketRequest), HttpStatus.CREATED);
+    public ResponseEntity<TicketResponse> createLottery(
+            @Valid @RequestBody TicketRequest ticketRequest) {
+        return new ResponseEntity<>(
+                ticketService.registerTicket(ticketRequest), HttpStatus.CREATED);
     }
-
 }
